@@ -73,27 +73,27 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 .day-chk svg{width:14px;height:14px;stroke:#fff;stroke-width:3;opacity:0}
 .day-chk.done svg{opacity:1}
 .day-info{flex:1;min-width:0}
-.day-label{font-size:11px;color:var(--tt);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
-.day-session{font-size:16px;font-weight:500;color:var(--tp)}
+.day-label{font-size:12px;color:var(--tt);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.day-session{font-size:18px;font-weight:500;color:var(--tp)}
 .day-card.is-done .day-session{opacity:.4;text-decoration:line-through}
 .day-chevron{width:16px;height:16px;stroke:var(--tt);stroke-width:2;flex-shrink:0;transition:transform .2s}
 .day-body{display:none;border-top:1px solid var(--brd)}
 .day-body.open{display:block}
-.day-note-banner{margin:12px 14px 4px;padding:9px 12px;background:rgba(255,155,215,.1);border:1px solid rgba(255,155,215,.3);border-radius:var(--r-md);font-size:13px;color:var(--pink-on);line-height:1.5}
-.day-info-text{padding:12px 14px;font-size:14px;color:var(--ts);line-height:1.6}
+.day-note-banner{margin:12px 14px 4px;padding:9px 12px;background:rgba(255,155,215,.1);border:1px solid rgba(255,155,215,.3);border-radius:var(--r-md);font-size:14px;color:var(--pink-on);line-height:1.5}
+.day-info-text{padding:12px 14px;font-size:15px;color:var(--ts);line-height:1.6}
 
 /* ── Exercise rows ── */
 .ex-row{padding:12px 14px;border-bottom:1px solid var(--brd)}
 .ex-row:last-of-type{border-bottom:none}
 .ex-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.ex-name{font-size:15px;font-weight:500;color:var(--tp)}
+.ex-name{font-size:17px;font-weight:500;color:var(--tp)}
 .pr-tag{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;background:var(--ind-m);color:var(--ind-on);border:1px solid rgba(77,95,255,.25);border-radius:var(--r-full);font-size:9px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-left:6px}
-.ex-meta{font-size:12px;color:var(--tt);margin-bottom:6px}
+.ex-meta{font-size:13px;color:var(--tt);margin-bottom:6px}
 .timer-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border:1px solid #ddd;border-radius:var(--r-full);background:rgba(0,0,0,.03);font-size:11px;color:var(--ts);cursor:pointer;font-family:inherit}
 .timer-btn svg{width:11px;height:11px;stroke:currentColor;stroke-width:2}
 .set-rows{display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .set-row{display:flex;align-items:center;gap:10px}
-.set-lbl{width:24px;font-size:12px;font-weight:500;color:var(--tt);flex-shrink:0}
+.set-lbl{width:24px;font-size:13px;font-weight:500;color:var(--tt);flex-shrink:0}
 .set-input-wrap{flex:1;position:relative;padding-bottom:16px}
 .set-input{width:100%;height:40px;border:1.5px solid var(--brd-d);border-radius:var(--r-md);background:var(--bg);font-size:16px;font-weight:500;color:var(--tp);text-align:center;font-family:inherit;outline:none;transition:border-color .15s,background .15s}
 .set-input:focus{border-color:var(--pink)}
@@ -109,7 +109,7 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 .notes-lbl{font-size:10px;font-weight:500;color:var(--tt);letter-spacing:.5px;text-transform:uppercase;margin-bottom:4px}
 .notes-input{width:100%;padding:9px 10px;border:1px solid var(--brd);border-radius:var(--r-md);background:var(--bg);font-size:16px;color:var(--tp);font-family:inherit;resize:none;outline:none;line-height:1.5}
 .notes-input:focus{border-color:var(--pink)}
-.complete-btn{display:flex;align-items:center;justify-content:center;height:48px;margin:0 14px 14px;border-radius:var(--r-full);background:var(--pink);color:var(--pink-on);font-size:15px;font-weight:500;cursor:pointer}
+.complete-btn{display:flex;align-items:center;justify-content:center;height:48px;margin:0 14px 14px;border-radius:var(--r-full);background:var(--pink);color:var(--pink-on);font-size:16px;font-weight:500;cursor:pointer}
 .complete-btn.done{background:var(--ind-m);color:var(--ind-on)}
 
 /* ── Add exercise / IO row ── */
@@ -124,7 +124,7 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 #timer-modal.open{display:flex}
 .timer-card{width:100%;max-width:340px;background:rgba(255,255,255,.88);backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);border:1px solid rgba(255,255,255,.6);border-radius:24px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.15)}
 .timer-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
-.timer-title{font-size:16px;font-weight:500;color:var(--tp)}
+.timer-title{font-size:18px;font-weight:500;color:var(--tp)}
 .timer-sub{font-size:11px;color:var(--tt);margin-top:2px}
 .timer-close{width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.07);display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;flex-shrink:0}
 .timer-close svg{width:15px;height:15px;stroke:var(--ts);stroke-width:2.5}
@@ -168,7 +168,7 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 .meal-block{background:var(--surf);border-radius:var(--r-md);border:1px solid var(--brd);overflow:hidden}
 .meal-header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;cursor:pointer}
 .meal-header svg{width:16px;height:16px;stroke:var(--tt);stroke-width:2;flex-shrink:0;transition:transform .2s}
-.meal-name{font-size:13px;font-weight:500;color:var(--tp)}
+.meal-name{font-size:15px;font-weight:500;color:var(--tp)}
 .meal-summary{font-size:11px;color:var(--tt);margin-top:1px}
 .meal-body{display:none;border-top:1px solid var(--brd)}
 .meal-body.open{display:block}
@@ -205,7 +205,7 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 .weight-stats{display:flex;gap:8px;margin-bottom:12px}
 .stat-card{flex:1;background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:8px 10px}
 .stat-lbl{font-size:9px;font-weight:600;color:var(--tt);letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
-.stat-val{font-size:16px;font-weight:600;color:var(--tp)}
+.stat-val{font-size:18px;font-weight:600;color:var(--tp)}
 .stat-val.pos{color:#22c55e}
 .stat-val span{font-size:10px;font-weight:400;color:var(--tt)}
 .chart-wrap{background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:10px 12px;margin-bottom:10px}
@@ -245,7 +245,7 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 .day-nav-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px 12px}
 .day-nav-info{flex:1;text-align:center;min-width:0}
 .day-nav-day-lbl{font-size:11px;color:#555}
-.day-nav-session-lbl{font-size:17px;font-weight:500;color:#fff;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.day-nav-session-lbl{font-size:18px;font-weight:500;color:#fff;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .day-arr{width:16px;height:16px;flex-shrink:0;stroke:var(--tt);stroke-width:2;fill:none}
 #hdr-day{display:none;background:var(--dk1);border-bottom:1px solid #222;padding-top:env(safe-area-inset-top)}
 #day-detail{display:none;position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg);z-index:1}
@@ -736,6 +736,7 @@ function buildPrevWeights(){
 function switchTab(tab){
   if(S.activeDayId) closeDay();
   S.tab=tab;
+  try{localStorage.setItem('liztab',tab);}catch(e){}
   ['workout','macros','progress'].forEach(t=>{
     document.getElementById(t+'-tab').classList.toggle('active',t===tab);
     document.getElementById('tab-'+t).classList.toggle('on',t===tab);
@@ -1560,69 +1561,7 @@ function launchConfetti(x,y){
   draw();
 }
 
-// ─────────────────────────────────────────────
-// PULL TO REFRESH
-// ─────────────────────────────────────────────
-(function(){
-  const THRESHOLD=65, MAX=100;
-  let startY=0, pulling=false, dist=0;
-
-  const ind=document.createElement('div');
-  ind.id='ptr-ind';
-  ind.innerHTML=`<svg id="ptr-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 10 12 5 17 10"/><line x1="12" y1="5" x2="12" y2="19"/></svg><svg id="ptr-spin" style="display:none" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>`;
-  Object.assign(ind.style,{
-    position:'fixed',top:'0',left:'0',right:'0',height:'0',
-    display:'flex',alignItems:'flex-end',justifyContent:'center',
-    paddingBottom:'6px',overflow:'hidden',
-    color:'var(--ind-on)',background:'transparent',
-    transition:'height .2s ease',zIndex:'999',pointerEvents:'none',
-    boxSizing:'border-box'
-  });
-  document.body.appendChild(ind);
-
-  function getPanel(){return document.querySelector('.tab-panel[style*="display: block",.tab-panel.active')||document.querySelector('.tab-panel:not([style*="display: none"])');}
-
-  function onStart(e){
-    const panel=document.querySelector('.tab-panel[style*="flex"],.tab-panel[style*="block"]');
-    const scrollEl=panel||document.scrollingElement;
-    if(scrollEl&&scrollEl.scrollTop>0) return;
-    pulling=true; dist=0;
-    startY=e.touches?e.touches[0].clientY:e.clientY;
-  }
-  function onMove(e){
-    if(!pulling) return;
-    const y=e.touches?e.touches[0].clientY:e.clientY;
-    dist=Math.max(0,y-startY);
-    if(dist>0){
-      const clamped=Math.min(dist,MAX);
-      const ratio=Math.min(clamped/THRESHOLD,1);
-      ind.style.height=clamped*.6+'px';
-      ind.style.opacity=ratio;
-      document.getElementById('ptr-arrow').style.transform=`rotate(${ratio*180}deg)`;
-      if(dist>2) e.preventDefault();
-    }
-  }
-  function onEnd(){
-    if(!pulling) return;
-    pulling=false;
-    if(dist>=THRESHOLD){
-      document.getElementById('ptr-arrow').style.display='none';
-      document.getElementById('ptr-spin').style.display='';
-      ind.style.height='44px';
-      const style=document.createElement('style');
-      style.textContent='#ptr-spin{animation:ptr-rotate .7s linear infinite}@keyframes ptr-rotate{to{transform:rotate(360deg)}}';
-      document.head.appendChild(style);
-      setTimeout(()=>location.reload(),500);
-    } else {
-      ind.style.height='0'; ind.style.opacity='0';
-    }
-    dist=0;
-  }
-
-  document.addEventListener('touchstart',onStart,{passive:true});
-  document.addEventListener('touchmove',onMove,{passive:false});
-  document.addEventListener('touchend',onEnd,{passive:true});
-})();
+// pull-to-refresh removed
 
 // ─────────────────────────────────────────────
 // KEYBOARD — hide tab bar when open
@@ -1641,6 +1580,7 @@ if(window.visualViewport){
 
 loadState();
 readUrlParams();
+(function(){try{const t=localStorage.getItem('liztab');if(t==='macros'||t==='progress')switchTab(t);}catch(e){}})();
 document.getElementById('hdr-date').textContent=todayStr();
 // Auto-expand today's card
 (function(){
