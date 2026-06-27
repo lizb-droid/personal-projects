@@ -89,15 +89,15 @@ In the project, go to **Add content → Upload files** and add:
 
 | File | Why |
 |---|---|
-| `profile/liz-athlete-profile.md` | Always needed — who Liz is |
+| `chat/nutritionist.md` | Full nutritionist context for daily logging |
+| `chat/training-coach.md` | Full training coach context for daily logging |
+| `profile/liz-athlete-profile.md` | Who Liz is — stats, goals, history |
 | `references/LIZPROFILE.pdf` | Full background profile |
 | `references/17WEEKPROGRAM.pdf` | Full training program |
 | `references/NUTRITIONGUIDE.pdf` | Deep nutrition reference |
 | `references/CYCLETRACKER.pdf` | Cycle phase context |
 | `references/RACEPREP.pdf` | Race-specific fueling and prep |
 | `references/WEEKLYCHECKIN.pdf` | Weekly check-in structure |
-
-Skip `nutritionist.md` and `training-coach.md` — their key rules are already in the project instructions above.
 
 ---
 
