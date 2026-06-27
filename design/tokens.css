@@ -1,0 +1,333 @@
+/* ============================================================
+   LIZ PERFORMANCE APP — DESIGN TOKENS
+   Version 2.0 · June 2026
+   Aesthetic: Dark Performance
+   ============================================================ */
+
+:root {
+
+  /* ----------------------------------------------------------
+     FONTS
+     ----------------------------------------------------------
+     Display:  Barlow Condensed 600/700 — headings, session names, big numbers
+     Mono:     Space Mono 400/700     — data labels, metrics, tags
+     Body:     Barlow 400/500         — notes, body copy, UI labels
+  ---------------------------------------------------------- */
+  --font-display: 'Barlow Condensed', sans-serif;
+  --font-mono:    'Space Mono', monospace;
+  --font-body:    'Barlow', sans-serif;
+
+  /* Google Fonts import string (add to <head>):
+     https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&family=Space+Mono:wght@400;700&display=swap
+  */
+
+
+  /* ----------------------------------------------------------
+     TYPE SCALE
+     Base: 16px. Steps follow an 8px-anchored rhythm.
+  ---------------------------------------------------------- */
+  --text-xs:   10px;   /* Space Mono — micro labels, tags */
+  --text-sm:   12px;   /* Space Mono — secondary labels */
+  --text-base: 14px;   /* Barlow — body copy, notes */
+  --text-md:   16px;   /* Barlow — UI labels, button text */
+  --text-lg:   20px;   /* Barlow Condensed — card subheadings */
+  --text-xl:   24px;   /* Barlow Condensed — metric values */
+  --text-2xl:  32px;   /* Barlow Condensed — section headers */
+  --text-3xl:  40px;   /* Barlow Condensed — display numbers */
+  --text-4xl:  48px;   /* Barlow Condensed — hero/PR values */
+
+  --font-weight-regular: 400;
+  --font-weight-medium:  500;
+  --font-weight-bold:    600;
+  --font-weight-black:   700;
+
+  --leading-tight:  1.0;
+  --leading-snug:   1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed:1.7;
+
+  --tracking-tight:  -0.01em;
+  --tracking-normal:  0em;
+  --tracking-wide:    0.06em;
+  --tracking-wider:   0.10em;
+  --tracking-widest:  0.14em;  /* Space Mono all-caps labels */
+
+
+  /* ----------------------------------------------------------
+     COLOR — BACKGROUNDS (DARK — existing performance system)
+     Layered dark surfaces. Each step ~8-10% lighter.
+  ---------------------------------------------------------- */
+  --color-bg:         #0f0f0f;  /* App canvas */
+  --color-surface-1:  #141414;  /* Cards, sheets */
+  --color-surface-2:  #1c1c1c;  /* Nested cards, input bg */
+  --color-surface-3:  #242424;  /* Hover states, pressed */
+  --color-surface-4:  #2e2e2e;  /* Borders hover */
+
+
+  /* ----------------------------------------------------------
+     COLOR — BACKGROUNDS (LIGHT — new app redesign)
+     Clean light system. Near-white canvas, white cards.
+  ---------------------------------------------------------- */
+  --color-bg-light:        #F6F6F6;  /* App canvas — super light gray (approved June 2026) */
+  --color-surface-light:   #ffffff;  /* Cards — white on gray bg, differentiated by shadow */
+  --color-surface-light-2: #F0F0F0;  /* Pressed / hover states on light bg */
+  --color-border-light:    rgba(0, 0, 0, 0.04);  /* Hairline card border on light surfaces */
+
+
+  /* ----------------------------------------------------------
+     COLOR — BORDERS
+  ---------------------------------------------------------- */
+  --color-border:        #222222;  /* Default card/input border */
+  --color-border-subtle: #1a1a1a;  /* Dividers */
+  --color-border-strong: #333333;  /* Emphasized borders */
+
+
+  /* ----------------------------------------------------------
+     COLOR — TEXT
+  ---------------------------------------------------------- */
+  --color-text-primary:   #ffffff;  /* Headings, values */
+  --color-text-secondary: #a3a3a3;  /* Supporting labels — 7.6:1 on bg */
+  --color-text-tertiary:  #7b7b7b;  /* Muted, disabled — 4.53:1 on bg (ADA AA) */
+  --color-text-inverse:   #0f0f0f;  /* Text on light/accent bg */
+
+
+  /* ----------------------------------------------------------
+     COLOR — BRAND / SEMANTIC
+     5-color performance palette. Each color owns a data domain.
+     Locked: June 2026.
+  ---------------------------------------------------------- */
+
+  /* ── PRIMARY ─────────────────────────────────────────────
+     Pink — CTA, active states, progress, protein macro
+     Text on pink bg: --color-pink-on (#5c1038)
+  ---------------------------------------------------------- */
+  --color-pink:         #FF9BD7;  /* On dark bg: 10.6:1 AAA ✓ — NEVER as text on white (1.9:1 fail) */
+  --color-pink-muted:   #ffe4f3;
+  --color-pink-on:      #5c1038;  /* Text on pink bg or light surfaces: 12.65:1 AAA ✓ */
+  --color-pink-dim:     rgba(255, 155, 215, 0.15);
+  --color-pink-hover:   #ff7ec4;
+
+  /* ── SECONDARY ───────────────────────────────────────────
+     Indigo — workout progress, set completion, carbs macro  */
+  --color-indigo:       #4D5FFF;           /* 4.01:1 — graphical use only (bars, borders, large text ≥20px Bold) */
+  --color-indigo-text:  #566BFF;           /* 4.51:1 — ADA AA for normal/small text labels */
+  --color-indigo-muted: #DFE0FF;
+  --color-indigo-dim:   rgba(77, 95, 255, 0.12);
+  --color-indigo-hover: #3a4de8;
+
+  /* ── SUPPORT ─────────────────────────────────────────────
+     Each color owns one data domain. Do not mix domains.    */
+
+  /* Coral — milk supply ONLY. Not for interactive states, CTAs, or nav. */
+  --color-coral:        #FF6230;
+  --color-coral-muted:  #FFDBCE;
+  --color-coral-on:     #5c1900;
+  --color-coral-dim:    rgba(255, 98, 48, 0.12);
+
+  /* Mint — recovery scores, sleep quality */
+  --color-mint:         #00E87A;
+  --color-mint-dim:     rgba(0, 232, 122, 0.12);
+
+  /* Yellow — fat macro, weekly data */
+  --color-yellow:       #DADF0A;
+  --color-yellow-dim:   rgba(218, 223, 10, 0.12);
+
+  /* ── SEMANTIC ALIASES ────────────────────────────────────
+     Use these in components — never hardcode brand hex     */
+  --color-accent:       var(--color-pink);
+  --color-accent-muted: var(--color-pink-muted);
+  --color-accent-dim:   var(--color-pink-dim);
+  --color-accent-hover: var(--color-pink-hover);
+
+  /* Status */
+  --color-warning:      #f59e0b;               /* Over macro target */
+  --color-warning-dim:  rgba(245, 158, 11, 0.12);
+
+  --color-success:      var(--color-mint);
+  --color-success-dim:  var(--color-mint-dim);
+
+  --color-danger:       #ef4444;               /* Red flags, alerts */
+  --color-danger-dim:   rgba(239, 68, 68, 0.12);
+
+
+  /* ----------------------------------------------------------
+     SPACING — 8px base scale
+     Usage: --space-{n} where value = n * 4px (half-steps at 1)
+  ---------------------------------------------------------- */
+  --space-1:   4px;    /* Tight gaps, icon padding */
+  --space-2:   8px;    /* Base unit */
+  --space-3:   12px;   /* Component internal padding */
+  --space-4:   16px;   /* Card padding, section gaps */
+  --space-5:   20px;   /* Medium gaps */
+  --space-6:   24px;   /* Section padding */
+  --space-8:   32px;   /* Large section gaps */
+  --space-10:  40px;   /* Between major sections */
+  --space-12:  48px;   /* Header heights */
+  --space-14:  56px;   /* Tab bar height */
+  --space-16:  64px;   /* Large spacing */
+  --space-20:  80px;   /* XL spacing */
+
+
+  /* ----------------------------------------------------------
+     BORDER RADIUS
+     3-value system: tight, standard, pill. Nothing in between.
+  ---------------------------------------------------------- */
+  --radius-sm:   4px;     /* Tags, badges, set trackers */
+  --radius-md:   8px;     /* Cards, buttons, inputs */
+  --radius-full: 9999px;  /* Pills, circles, progress bars */
+
+
+  /* ----------------------------------------------------------
+     GRID — 12 COLUMN MOBILE
+     Designed for 390px (iPhone 15 Pro) viewport.
+     Col width = (390 - 2×16px margin - 11×8px gutters) / 12 = 22.5px
+     Span helpers: --grid-span-{n} = n cols + (n-1) gutters
+  ---------------------------------------------------------- */
+  --grid-columns:      12;
+  --grid-margin:       16px;   /* Left/right page margin */
+  --grid-gutter:       8px;    /* Between columns */
+  --grid-col-unit:     22.5px; /* Single column width */
+
+  /* Common span widths (use as reference, apply via grid or calc) */
+  --grid-span-2:  53px;    /* 2 cols */
+  --grid-span-3:  82px;    /* 3 cols */
+  --grid-span-4:  114px;   /* 4 cols — small card */
+  --grid-span-6:  175px;   /* 6 cols — half width */
+  --grid-span-8:  236px;   /* 8 cols */
+  --grid-span-12: 358px;   /* Full content width */
+
+
+  /* ----------------------------------------------------------
+     TOUCH TARGETS
+  ---------------------------------------------------------- */
+  --touch-min:  44px;   /* Apple HIG minimum */
+  --touch-base: 48px;   /* Comfortable tap target */
+  --touch-lg:   56px;   /* Primary buttons */
+
+
+  /* ----------------------------------------------------------
+     TRANSITIONS
+  ---------------------------------------------------------- */
+  --transition-instant: 0ms;
+  --transition-fast:    150ms ease;
+  --transition-base:    250ms ease;
+  --transition-slow:    350ms ease-out;
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — CARDS
+  ---------------------------------------------------------- */
+  --card-bg:      var(--color-surface-1);
+  --card-border:  1px solid var(--color-border);
+  --card-radius:  var(--radius-lg);
+  --card-padding: var(--space-4);
+  --card-gap:     var(--space-3);
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — INPUTS
+  ---------------------------------------------------------- */
+  --input-bg:           var(--color-surface-2);
+  --input-border:       1px solid var(--color-border);
+  --input-border-focus: 1px solid var(--color-accent);
+  --input-radius:       var(--radius-md);
+  --input-height:       var(--touch-min);  /* 44px */
+  --input-font:         var(--font-mono);
+  --input-font-size:    var(--text-md);
+  --input-color:        var(--color-text-primary);
+  --input-placeholder:  var(--color-text-tertiary);
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — BUTTONS
+  ---------------------------------------------------------- */
+  --btn-primary-bg:       var(--color-accent);
+  --btn-primary-color:    #0f0f0f;  /* Dark on coral — 6.43:1 ADA AAA (white was 2.98:1, failed large-text AA) */
+  --btn-primary-hover-bg: var(--color-accent-hover);
+  --btn-primary-height:   var(--touch-lg);   /* 56px */
+  --btn-primary-radius:   var(--radius-lg);
+  --btn-primary-font:     var(--font-display);
+  --btn-primary-size:     var(--text-lg);
+  --btn-primary-weight:   var(--font-weight-bold);
+  --btn-primary-tracking: var(--tracking-wide);
+
+  --btn-ghost-bg:         transparent;
+  --btn-ghost-border:     1px solid var(--color-border-strong);
+  --btn-ghost-color:      var(--color-text-secondary);
+  --btn-ghost-height:     var(--touch-min);  /* 44px */
+  --btn-ghost-radius:     var(--radius-md);
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — TAB BAR
+  ---------------------------------------------------------- */
+  --tab-bar-bg:          var(--color-bg);
+  --tab-bar-height:      var(--space-14);   /* 56px */
+  --tab-bar-border-top:  1px solid var(--color-border);
+  --tab-active-color:    var(--color-accent);
+  --tab-inactive-color:  var(--color-text-tertiary);
+  --tab-font:            var(--font-mono);
+  --tab-font-size:       var(--text-xs);
+  --tab-tracking:        var(--tracking-widest);
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — PROGRESS BARS
+  ---------------------------------------------------------- */
+  --progress-height:      6px;
+  --progress-radius:      var(--radius-full);
+  --progress-track:       var(--color-surface-3);
+  --progress-fill:        var(--color-accent);
+  --progress-fill-done:   var(--color-indigo);  /* Done = indigo (locked June 2026) */
+  --progress-fill-over:   var(--color-warning);
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — SCORE SELECTORS (recovery circles)
+  ---------------------------------------------------------- */
+  --score-size:           32px;
+  --score-gap:            var(--space-1);
+  --score-bg:             var(--color-surface-2);
+  --score-active-bg:      var(--color-mint);
+  --score-font:           var(--font-mono);
+  --score-font-size:      var(--text-xs);
+  --score-active-color:   #0f0f0f;  /* Dark on mint — 11.71:1 ADA AAA (white was 1.64:1, badly failed) */
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — GLASS SURFACES
+     Apple-style frosted glass. Requires backdrop-filter support.
+     Always add -webkit-backdrop-filter for Safari/iOS.
+     Use on: tab bar, header, bottom sheets, floating cards.
+  ---------------------------------------------------------- */
+  --glass-bg:             rgba(15, 15, 15, 0.72);    /* Dark glass base */
+  --glass-bg-light:       rgba(28, 28, 28, 0.68);    /* Lighter glass — nested cards */
+  --glass-blur:           blur(20px);                 /* Standard blur */
+  --glass-blur-heavy:     blur(32px);                 /* Sheets, modals */
+  --glass-border:         rgba(255, 255, 255, 0.07);  /* Subtle light rim */
+  --glass-border-accent:  rgba(255, 98, 48, 0.30);    /* Coral rim on active glass */
+  --glass-border-indigo:  rgba(77, 95, 255, 0.20);   /* Indigo rim on workout glass */
+
+  /* Usage pattern:
+     background: var(--glass-bg);
+     -webkit-backdrop-filter: var(--glass-blur);
+     backdrop-filter: var(--glass-blur);
+     border: 1px solid var(--glass-border);
+  */
+
+
+  /* ----------------------------------------------------------
+     COMPONENT TOKENS — HEADER
+  ---------------------------------------------------------- */
+  --header-height:        56px;
+  --header-bg:            var(--color-bg);
+  --header-border-bottom: 1px solid var(--color-border);
+  --header-name-font:     var(--font-display);
+  --header-name-size:     var(--text-xl);
+  --header-name-weight:   var(--font-weight-bold);
+  --header-name-tracking: var(--tracking-wide);
+  --header-sub-font:      var(--font-mono);
+  --header-sub-size:      var(--text-xs);
+  --header-sub-color:     var(--color-text-tertiary);
+  --header-sub-tracking:  var(--tracking-widest);
+}

@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liz Performance App — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ── DOC TOKENS (light page) ─────────────────────────────── */
+:root{
+  --doc-bg:#f6f6f6;
+  --doc-surf:#ffffff;
+  --doc-brd:#e8e8e8;
+  --doc-tp:#111111;
+  --doc-ts:#555555;
+  --doc-tt:#999999;
+  /* Pink text on light/white surfaces — #5c1038 = 12.65:1 on white (AAA) */
+  --doc-pink-text:#5c1038;
+
+  /* ── APP TOKENS (dark performance system) ────────────────── */
+  --app-bg:#0f0f0f;
+  --app-s1:#141414;
+  --app-s2:#1c1c1c;
+  --app-s3:#242424;
+  --app-brd:#222;
+  --app-brd-st:#333;
+  --app-tp:#ffffff;
+  --app-ts:#a3a3a3;
+  --app-tt:#7b7b7b;
+
+  /* PRIMARY — Pink */
+  --pink:#FF9BD7;
+  --pink-m:#ffe4f3;
+  --pink-on:#5c1038;
+  --pink-d:rgba(255,155,215,.15);
+  --pink-h:#ff7ec4;
+
+  /* SECONDARY — Indigo */
+  --ind:#4D5FFF;
+  --ind-t:#566BFF;
+  --ind-m:#DFE0FF;
+  --ind-d:rgba(77,95,255,.12);
+  --ind-h:#3a4de8;
+
+  /* CARBS — Coral */
+  --coral:#FF6230;
+  --coral-m:#FFDBCE;
+  --coral-on:#5c1900;
+  --coral-d:rgba(255,98,48,.12);
+
+  /* FAT — Yellow */
+  --yel:#DADF0A;
+  --yel-m:#f9fac0;
+  --yel-on:#4a4e00;
+  --yel-d:rgba(218,223,10,.12);
+
+  /* CALORIES — Red */
+  --cal-red:#ef4444;
+
+  /* STATUS */
+  --warn:#f59e0b;
+  --warn-d:rgba(245,158,11,.12);
+  --err:#ef4444;
+  --err-d:rgba(239,68,68,.12);
+
+  --r-sm:4px;--r-md:8px;--r-lg:12px;--r-full:9999px;
+  --font:'Roboto',sans-serif;
+
+  /* Icon color — single color in DS */
+  --icon-color:#555555;
+}
+
+body{
+  background:var(--doc-bg);color:var(--doc-tp);
+  font-family:var(--font);font-size:14px;line-height:1.5;
+  display:flex;min-height:100vh;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────────────── */
+nav{
+  width:196px;min-width:196px;background:var(--doc-surf);
+  border-right:1px solid var(--doc-brd);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  padding:24px 0;flex-shrink:0;
+}
+.nav-logo{padding:0 20px 20px;border-bottom:1px solid var(--doc-brd);margin-bottom:12px;}
+.nav-logo .app{font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--doc-pink-text);}
+.nav-logo .title{font-size:13px;font-weight:700;color:var(--doc-tp);margin-top:3px;}
+.nav-logo .ver{font-size:11px;color:var(--doc-tt);margin-top:1px;}
+.nav-group{font-size:10px;font-weight:700;letter-spacing:.1em;
+  color:var(--doc-tt);padding:14px 20px 4px;}
+nav a{
+  display:block;padding:7px 20px;font-size:12px;font-weight:500;color:var(--doc-ts);
+  text-decoration:none;border-left:2px solid transparent;transition:.15s;
+}
+nav a:hover{color:var(--doc-tp);}
+/* Active: dark maroon text (12.65:1 on white) + pink accent border */
+nav a.active{color:var(--doc-pink-text);border-left-color:var(--pink);background:rgba(255,155,215,.12);}
+
+/* ── MAIN ────────────────────────────────────────────────── */
+main{flex:1;padding:48px 56px;max-width:1000px;}
+
+/* ── PAGE HEADER ─────────────────────────────────────────── */
+.page-header{border-bottom:1px solid var(--doc-brd);padding-bottom:32px;margin-bottom:48px;}
+.chip{display:inline-flex;align-items:center;gap:6px;
+  background:var(--pink-d);color:var(--doc-pink-text);border:1px solid rgba(255,155,215,.4);
+  border-radius:var(--r-full);padding:3px 12px;font-size:11px;font-weight:700;
+  margin-bottom:12px;}
+.page-header h1{font-size:30px;font-weight:700;letter-spacing:-.01em;color:var(--doc-tp);}
+.page-header p{color:var(--doc-ts);margin-top:6px;max-width:480px;font-size:13px;}
+
+/* ── SECTION ─────────────────────────────────────────────── */
+section{margin-bottom:60px;}
+.section-title{font-size:10px;font-weight:700;letter-spacing:.14em;
+  color:var(--doc-tt);margin-bottom:24px;padding-bottom:10px;border-bottom:1px solid var(--doc-brd);}
+.section-sub{font-size:15px;font-weight:700;color:var(--doc-tp);margin-bottom:14px;margin-top:28px;}
+.section-sub:first-of-type{margin-top:0;}
+
+/* ── CALLOUT ─────────────────────────────────────────────── */
+.callout{
+  background:#fff;border-radius:0 var(--r-md) var(--r-md) 0;
+  padding:11px 14px;font-size:12px;color:var(--doc-ts);margin-bottom:20px;
+  border:1px solid var(--doc-brd);border-left:3px solid var(--pink);
+}
+/* Links inside callouts on light bg */
+.callout a{color:var(--doc-pink-text);}
+.callout.coral{border-left-color:var(--coral);}
+.callout.ind{border-left-color:var(--ind);}
+.callout strong{color:var(--doc-tp);}
+
+/* ── COLOR SWATCHES ──────────────────────────────────────── */
+.color-group{margin-bottom:28px;}
+.color-group-label{font-size:11px;font-weight:700;letter-spacing:.08em;
+  color:var(--doc-tt);margin-bottom:12px;}
+.color-row{display:flex;flex-wrap:wrap;gap:10px;}
+.swatch{border-radius:var(--r-md);overflow:hidden;width:136px;border:1px solid var(--doc-brd);}
+.swatch-chip{height:60px;}
+.swatch-info{padding:8px 10px;background:#fff;}
+.swatch-name{font-size:11px;font-weight:700;color:var(--doc-tp);}
+.swatch-hex{font-size:10px;color:var(--doc-ts);font-family:monospace;margin-top:1px;}
+.swatch-role{font-size:10px;color:var(--doc-tt);margin-top:2px;line-height:1.3;}
+
+/* ── COMPONENT PREVIEW (light) ───────────────────────────── */
+.preview{
+  background:#ffffff;border-radius:12px;
+  border:1px solid var(--doc-brd);
+  padding:24px;
+}
+/* alias so old markup still works */
+.dark-preview{background:#ffffff;border-radius:12px;border:1px solid var(--doc-brd);padding:24px;}
+.comp-label{font-size:10px;font-weight:700;letter-spacing:.1em;
+  color:var(--doc-tt);margin-bottom:14px;}
+.comp-grid{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;}
+.comp-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+.state-wrap{text-align:center;}
+.state-label{font-size:9px;color:var(--doc-tt);margin-top:6px;}
+
+/* ── BUTTONS ─────────────────────────────────────────────── */
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--pink);color:var(--pink-on);border:none;border-radius:var(--r-lg);
+  height:56px;padding:0 24px;font-family:var(--font);font-size:14px;font-weight:700;
+  letter-spacing:.02em;cursor:pointer;transition:.15s;
+}
+.btn-primary:hover{background:var(--pink-h);}
+.btn-primary.sm{height:44px;padding:0 16px;font-size:13px;border-radius:var(--r-md);}
+
+.btn-ghost{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  background:#f0f0f0;color:#555;border:1px solid #e0e0e0;
+  border-radius:var(--r-md);height:44px;padding:0 16px;font-family:var(--font);
+  font-size:13px;font-weight:500;cursor:pointer;transition:.15s;
+}
+.btn-ghost.on{background:var(--pink-d);border-color:rgba(255,155,215,.5);color:var(--doc-pink-text);font-weight:700;}
+
+/* ── TAGS ────────────────────────────────────────────────── */
+.tag{display:inline-flex;align-items:center;gap:4px;
+  background:var(--ind-d);color:var(--ind-t);border:1px solid rgba(77,95,255,.25);
+  border-radius:var(--r-full);padding:2px 6px;font-size:9px;font-weight:500;
+  }
+.tag.pink{background:var(--pink-d);color:var(--doc-pink-text);border-color:rgba(255,155,215,.4);}
+.tag.mint{background:var(--mint-d);color:#006636;border-color:rgba(0,232,122,.4);}
+.tag.coral{background:var(--coral-d);color:var(--coral-on);border-color:rgba(255,98,48,.3);}
+.tag.warn{background:var(--warn-d);color:#92550a;border-color:rgba(245,158,11,.4);}
+.tag.err{background:var(--err-d);color:#991b1b;border-color:rgba(239,68,68,.3);}
+/* Dark surface variants — use on app headers (#141414 / #1c1c1c) */
+.tag.dark{background:rgba(255,255,255,.08);color:#aaaaaa;border-color:rgba(255,255,255,.14);}
+.tag.dark.pink{background:rgba(255,155,215,.18);color:#FF9BD7;border-color:rgba(255,155,215,.4);}
+.tag.dark.ind{background:rgba(77,95,255,.18);color:#a0aaff;border-color:rgba(77,95,255,.35);}
+
+/* ── CHECKBOX ────────────────────────────────────────────── */
+.cb{width:20px;height:20px;border-radius:4px;border:1px solid #d0d0d0;
+  background:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cb.checked{background:var(--ind);border-color:var(--ind);}
+.cb.checked::after{content:'';width:10px;height:7px;border-left:2px solid #fff;
+  border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px);}
+
+/* ── NAV PILLS ───────────────────────────────────────────── */
+.nav-pill{display:inline-flex;align-items:center;gap:6px;
+  background:#f0f0f0;color:#555;border:none;border-radius:var(--r-full);
+  height:36px;padding:0 14px;font-family:var(--font);font-size:12px;font-weight:500;}
+.nav-pill.on{background:var(--pink);color:var(--pink-on);font-weight:700;}
+
+/* ── WEEK TABS ───────────────────────────────────────────── */
+.week-tab{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;
+  width:44px;height:52px;border-radius:var(--r-md);background:#f0f0f0;
+  border:1px solid transparent;gap:1px;}
+.week-tab .wt-d{font-size:9px;font-weight:500;color:#999;}
+.week-tab .wt-n{font-size:15px;font-weight:700;color:#555;}
+.week-tab.on{border-color:var(--pink);background:var(--pink-d);}
+.week-tab.on .wt-d,.week-tab.on .wt-n{color:var(--doc-pink-text);}
+.week-tab.done .wt-n{color:var(--ind-t);}
+
+/* ── TAB BAR ─────────────────────────────────────────────── */
+.tab-item{display:inline-flex;flex-direction:column;align-items:center;gap:3px;padding:8px 14px;}
+.tab-item svg{width:20px;height:20px;color:#555;}
+.tab-item span{font-size:9px;font-weight:700;letter-spacing:.08em;color:#555;}
+/* Dark context (app tab bar is always dark) */
+.tab-dark .tab-item svg{color:#555;}
+.tab-dark .tab-item span{color:#555;}
+.tab-dark .tab-item.on svg{color:var(--pink);}
+.tab-dark .tab-item.on span{color:var(--pink);}
+
+/* ── EXERCISE LIST CARD (List view) ──────────────────────── */
+.ex-list-card{
+  background:#fff;border:1px solid #e8e8e8;border-radius:var(--r-lg);
+  padding:14px;display:flex;align-items:center;gap:12px;width:300px;
+}
+.ex-list-card .ex-name{font-size:15px;font-weight:500;color:#0f0f0f;
+  display:flex;align-items:center;gap:6px;}
+.ex-list-card .ex-meta{font-size:12px;color:#a3a3a3;margin-top:3px;}
+.ex-list-card.done-card{opacity:.75;}
+/* PR tag — matches app: 9px, uppercase, border, icon */
+.pr-tag{display:inline-flex;align-items:center;gap:3px;
+  font-size:9px;font-weight:500;color:var(--ind-on);background:var(--ind-m);
+  border:1px solid rgba(77,95,255,.25);border-radius:var(--r-full);
+  padding:2px 6px;white-space:nowrap;}
+
+/* ── SET ROW (Detail view — card system) ─────────────── */
+.set-row{display:flex;align-items:center;gap:10px;
+  border-radius:var(--r-md);border:1px solid #e8e8e8;
+  padding:10px 14px;width:300px;}
+/* Done */
+.set-row.done-row{background:var(--ind-m);border-color:#c5caff;}
+.set-row.done-row .sr-label{color:#1a2580;}
+.set-row.done-row .sr-weight{border-color:#c5caff;background:var(--ind-m);}
+.set-row.done-row .sr-weight .wv{color:#1a2580;}
+.set-row.done-row .sr-weight .wu{color:#1a2580;}
+/* Active */
+.set-row.active-row{background:#fff;border-color:rgba(255,155,215,.6);}
+.set-row.active-row .sr-label{color:#a3a3a3;}
+.set-row.active-row .sr-input{border:2px solid var(--pink) !important;background:#fff;}
+/* Pending */
+.set-row.pending-row .sr-label{color:#ccc;}
+
+.sr-label{font-size:12px;font-weight:500;flex-shrink:0;min-width:52px;}
+.sr-label .sr-reps-inline{font-size:11px;font-weight:400;opacity:.65;}
+.sr-weight{flex:1;border:1px solid #e8e8e8;border-radius:var(--r-sm);height:38px;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background:#fafafa;}
+.sr-weight .wv{font-size:14px;font-weight:600;color:#111;}
+.sr-weight .wu{font-size:9px;color:#a3a3a3;}
+
+/* ── INPUT ───────────────────────────────────────────────── */
+.input-demo{background:#fff;border:1px solid #e0e0e0;border-radius:var(--r-md);
+  height:44px;padding:0 12px;font-family:var(--font);font-size:14px;color:#111;
+  width:200px;outline:none;transition:.15s;}
+.input-demo::placeholder{color:#bbb;}
+.input-demo:focus{border-color:var(--pink);}
+
+/* ── SCORE CIRCLES ───────────────────────────────────────── */
+.score-row{display:flex;gap:4px;}
+.score-c{width:32px;height:32px;border-radius:var(--r-full);background:#f0f0f0;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#bbb;}
+.score-c.on{background:var(--mint);color:#0f0f0f;}
+
+/* ── PROGRESS ────────────────────────────────────────────── */
+.prog-wrap{width:260px;}
+.prog-meta{display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:5px;}
+.prog-track{height:6px;background:#efefef;border-radius:var(--r-full);overflow:hidden;}
+.prog-fill{height:100%;border-radius:var(--r-full);}
+
+/* ── TIMER ───────────────────────────────────────────────── */
+.timer{font-size:48px;font-weight:700;color:#111;letter-spacing:-.02em;
+  background:#f6f6f6;border-radius:var(--r-lg);padding:12px 28px;display:inline-block;border:1px solid #e8e8e8;}
+
+/* ── TYPE ────────────────────────────────────────────────── */
+.type-row{display:flex;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid var(--doc-brd);}
+.type-meta{width:84px;flex-shrink:0;}
+.type-token{font-size:10px;color:var(--doc-ts);font-family:monospace;}
+.type-sz{font-size:10px;color:var(--doc-tt);}
+
+/* ── SPACING ─────────────────────────────────────────────── */
+.space-rows{display:flex;flex-direction:column;gap:8px;}
+.space-row{display:flex;align-items:center;gap:12px;}
+.space-bar-wrap{width:280px;}
+.space-bar{height:8px;background:var(--pink);border-radius:2px;}
+.space-label{font-size:11px;color:var(--doc-ts);font-family:monospace;width:80px;flex-shrink:0;}
+.space-val{font-size:11px;color:var(--doc-tt);}
+
+/* ── RADIUS ──────────────────────────────────────────────── */
+.radius-row{display:flex;gap:24px;flex-wrap:wrap;}
+.radius-item{text-align:center;}
+.radius-box{width:80px;height:80px;background:var(--doc-surf);border:1px solid var(--doc-brd);}
+.radius-label{font-size:11px;color:var(--doc-ts);font-family:monospace;margin-top:6px;}
+.radius-val{font-size:10px;color:var(--doc-tt);}
+
+/* ── ICONS ───────────────────────────────────────────────── */
+.icon-grid{display:flex;flex-wrap:wrap;gap:20px;}
+.icon-item{display:flex;flex-direction:column;align-items:center;gap:6px;width:64px;}
+.icon-item svg{width:24px;height:24px;color:var(--icon-color);}
+.icon-item span{font-size:10px;color:var(--doc-tt);text-align:center;word-break:break-word;}
+
+/* ── TOKEN TABLE ─────────────────────────────────────────── */
+.token-table{width:100%;border-collapse:collapse;font-size:12px;}
+.token-table th{text-align:left;color:var(--doc-tt);font-weight:700;letter-spacing:.08em;
+  font-size:10px;padding:8px 12px;border-bottom:1px solid var(--doc-brd);}
+.token-table td{padding:8px 12px;border-bottom:1px solid var(--doc-brd);color:var(--doc-ts);}
+.token-table td:first-child{font-family:monospace;color:var(--doc-tp);font-size:11px;}
+.token-table td:nth-child(2){color:var(--doc-pink-text);}
+.token-table tr:last-child td{border-bottom:none;}
+
+/* ── GLASS ───────────────────────────────────────────────── */
+/* Light glass — used for Timer modal (frosted, over dark app bg) */
+.glass{background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(28px) saturate(1.4);
+  backdrop-filter:blur(28px) saturate(1.4);border:1px solid rgba(255,255,255,.6);border-radius:24px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.12);}
+/* Dark glass — alternative surface, e.g. overlaid on light bg */
+.glass-dark{background:rgba(15,15,15,.72);-webkit-backdrop-filter:blur(20px);
+  backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.07);border-radius:var(--r-lg);padding:14px 18px;}
+.glass-accent{background:rgba(15,15,15,.72);-webkit-backdrop-filter:blur(20px);
+  backdrop-filter:blur(20px);border:1px solid rgba(255,155,215,.35);border-radius:var(--r-lg);padding:14px 18px;}
+
+/* ── SCREENS ─────────────────────────────────────────────── */
+.screens-grid{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;}
+.phone-wrap{text-align:center;}
+.phone-label{font-size:11px;color:var(--doc-ts);font-weight:700;
+  margin-bottom:10px;}
+/* Raw app UI in a mobile-width container — no phone chrome */
+.screen-frame{
+  width:281px;height:562px;overflow:hidden;
+  border-radius:12px;
+  border:1px solid #ddd;
+  box-shadow:0 6px 24px rgba(0,0,0,.12);
+  background:#fafafa;
+  flex-shrink:0;
+}
+.screen-frame iframe{
+  width:375px;height:750px;border:none;
+  transform:scale(.75);transform-origin:top left;pointer-events:none;
+}
+
+hr{border:none;border-top:1px solid var(--doc-brd);margin:48px 0;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <div class="app">Liz Performance</div>
+    <div class="title">Design System</div>
+    <div class="ver">v2 · June 2026</div>
+  </div>
+  <div class="nav-group">Foundation</div>
+  <a href="#colors">Colors</a>
+  <a href="#typography">Typography</a>
+  <a href="#spacing">Spacing</a>
+  <a href="#radius">Radius</a>
+  <a href="#icons">Icons</a>
+  <div class="nav-group">Components</div>
+  <a href="#buttons">Buttons</a>
+  <a href="#tags">Tags</a>
+  <a href="#inputs">Inputs</a>
+  <a href="#controls">Controls</a>
+  <a href="#cards">Cards</a>
+  <a href="#macros-patterns">Macros</a>
+  <a href="#progress-patterns">Progress</a>
+  <a href="#navigation">Navigation</a>
+  <a href="#feedback">Feedback</a>
+  <a href="#celebration">Celebration</a>
+  <div class="nav-group">Screens</div>
+  <a href="#screens">Overview</a>
+  <a href="#workout-list">Workout List</a>
+  <a href="#workout-detail">Exercise Detail</a>
+  <a href="#rest-timer">Rest Timer</a>
+  <div class="nav-group">Reference</div>
+  <a href="#tokens">Token Reference</a>
+</nav>
+
+<main>
+  <div class="page-header">
+    <div class="chip">v2 · Dark Performance</div>
+    <h1>Design System</h1>
+    <p>Source of truth for colors, type, spacing, and components. Tokens reference <code>tokens.css</code>. Font: Roboto. Icons: Lucide.</p>
+    <div style="margin-top:10px;font-size:11px;color:var(--doc-tt);display:flex;align-items:center;gap:5px;">
+      <i data-lucide="clock" style="width:11px;height:11px"></i>
+      Last updated: <span id="ds-last-updated"></span>
+    </div>
+  </div>
+
+  <!-- COLORS -->
+  <section id="colors">
+    <div class="section-title">Colors</div>
+
+    <div class="callout"><strong>Role lock — June 2026:</strong> Pink = Primary CTA, active states. Indigo = Protein bars, done/set completion. Coral = Carbs bars. Yellow = Fat bars. Red = Calories. No domain mixing.</div>
+
+    <div class="color-group">
+      <div class="color-group-label">Primary — Pink</div>
+      <div class="color-row">
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#5c1038"></div>
+          <div class="swatch-info"><div class="swatch-name">Pink On</div><div class="swatch-hex">#5c1038</div><div class="swatch-role">Text on pink bg</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#ff7ec4"></div>
+          <div class="swatch-info"><div class="swatch-name">Pink Hover</div><div class="swatch-hex">#ff7ec4</div><div class="swatch-role">Button hover state</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#FF9BD7"></div>
+          <div class="swatch-info"><div class="swatch-name">Pink</div><div class="swatch-hex">#FF9BD7</div><div class="swatch-role">CTA, active states</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#ffe4f3"></div>
+          <div class="swatch-info"><div class="swatch-name">Pink Muted</div><div class="swatch-hex">#ffe4f3</div><div class="swatch-role">Active card bg</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:rgba(255,155,215,.15);border:1px dashed #ddd"></div>
+          <div class="swatch-info"><div class="swatch-name">Pink Dim</div><div class="swatch-hex">rgba(255,155,215,.15)</div><div class="swatch-role">Hover surface</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">Secondary — Indigo</div>
+      <div class="color-row">
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#4D5FFF"></div>
+          <div class="swatch-info"><div class="swatch-name">Indigo</div><div class="swatch-hex">#4D5FFF</div><div class="swatch-role">Protein bars, done/set completion</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#566BFF"></div>
+          <div class="swatch-info"><div class="swatch-name">Indigo Text</div><div class="swatch-hex">#566BFF</div><div class="swatch-role">Labels — AA 4.51:1</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#DFE0FF"></div>
+          <div class="swatch-info"><div class="swatch-name">Indigo Muted</div><div class="swatch-hex">#DFE0FF</div><div class="swatch-role">Light surface</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:rgba(77,95,255,.12);border:1px dashed #ddd"></div>
+          <div class="swatch-info"><div class="swatch-name">Indigo Dim</div><div class="swatch-hex">rgba(77,95,255,.12)</div><div class="swatch-role">Done set row bg</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">Macro Progress Bars</div>
+      <div class="color-row">
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#5c1900"></div>
+          <div class="swatch-info"><div class="swatch-name">Coral On</div><div class="swatch-hex">#5c1900</div><div class="swatch-role">Text on coral bg</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#FF6230"></div>
+          <div class="swatch-info"><div class="swatch-name">Coral</div><div class="swatch-hex">#FF6230</div><div class="swatch-role">Carbs bars</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#FFDBCE"></div>
+          <div class="swatch-info"><div class="swatch-name">Coral Muted</div><div class="swatch-hex">#FFDBCE</div><div class="swatch-role">Carbs bar bg</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#4a4e00"></div>
+          <div class="swatch-info"><div class="swatch-name">Yellow On</div><div class="swatch-hex">#4a4e00</div><div class="swatch-role">Text on yellow bg</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#DADF0A"></div>
+          <div class="swatch-info"><div class="swatch-name">Yellow</div><div class="swatch-hex">#DADF0A</div><div class="swatch-role">Fat bars</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#f9fac0"></div>
+          <div class="swatch-info"><div class="swatch-name">Yellow Muted</div><div class="swatch-hex">#f9fac0</div><div class="swatch-role">Fat bar bg</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#ef4444"></div>
+          <div class="swatch-info"><div class="swatch-name">Red</div><div class="swatch-hex">#ef4444</div><div class="swatch-role">Calories bars</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">Status</div>
+      <div class="color-row">
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#f59e0b"></div>
+          <div class="swatch-info"><div class="swatch-name">Warning</div><div class="swatch-hex">#f59e0b</div><div class="swatch-role">Over macro target</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#ef4444"></div>
+          <div class="swatch-info"><div class="swatch-name">Danger</div><div class="swatch-hex">#ef4444</div><div class="swatch-role">Red flags, alerts</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#00E87A"></div>
+          <div class="swatch-info"><div class="swatch-name">Success</div><div class="swatch-hex">#00E87A</div><div class="swatch-role">Goals met, positive states</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="color-group">
+      <div class="color-group-label">Neutrals — Dark surfaces (app)</div>
+      <div class="color-row">
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#0f0f0f"></div>
+          <div class="swatch-info"><div class="swatch-name">App BG</div><div class="swatch-hex">#0f0f0f</div><div class="swatch-role">Canvas</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#141414"></div>
+          <div class="swatch-info"><div class="swatch-name">Surface 1</div><div class="swatch-hex">#141414</div><div class="swatch-role">Cards, sheets</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#1c1c1c"></div>
+          <div class="swatch-info"><div class="swatch-name">Surface 2</div><div class="swatch-hex">#1c1c1c</div><div class="swatch-role">Nested cards, inputs</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#a3a3a3"></div>
+          <div class="swatch-info"><div class="swatch-name">Text Secondary</div><div class="swatch-hex">#a3a3a3</div><div class="swatch-role">7.6:1 on dark bg</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-chip" style="background:#7b7b7b"></div>
+          <div class="swatch-info"><div class="swatch-name">Text Tertiary</div><div class="swatch-hex">#7b7b7b</div><div class="swatch-role">Muted — AA 4.53:1</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section id="typography">
+    <div class="section-title">Typography</div>
+    <div class="callout"><strong>Font:</strong> Roboto — 400 Regular · 500 Medium · 700 Bold.</div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-4xl</div><div class="type-sz">48px Bold</div></div><span style="font-size:48px;font-weight:700;line-height:1">PR Value</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-3xl</div><div class="type-sz">40px Bold</div></div><span style="font-size:40px;font-weight:700;line-height:1">Display</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-2xl</div><div class="type-sz">32px Bold</div></div><span style="font-size:32px;font-weight:700">Section Header</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-xl</div><div class="type-sz">24px Bold</div></div><span style="font-size:24px;font-weight:700">Metric Value</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-lg</div><div class="type-sz">20px Bold</div></div><span style="font-size:20px;font-weight:700">Card Subheading</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-md</div><div class="type-sz">16px Medium</div></div><span style="font-size:16px;font-weight:500">UI Label, Button Text</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-base</div><div class="type-sz">14px Regular</div></div><span style="font-size:14px;font-weight:400;color:var(--doc-ts)">Body copy, notes, supporting text for context</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-sm</div><div class="type-sz">12px Medium</div></div><span style="font-size:12px;font-weight:500;color:var(--doc-ts)">Secondary labels, metadata</span></div>
+    <div class="type-row"><div class="type-meta"><div class="type-token">--text-xs</div><div class="type-sz">10px Bold</div></div><span style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--doc-tt)">MICRO LABEL · TAG · NAV</span></div>
+  </section>
+
+  <!-- SPACING -->
+  <section id="spacing">
+    <div class="section-title">Spacing — 8px base scale</div>
+    <div class="space-rows">
+      <div class="space-row"><div class="space-label">--space-1</div><div class="space-bar-wrap"><div class="space-bar" style="width:4px"></div></div><div class="space-val">4px · tight gaps, icon padding</div></div>
+      <div class="space-row"><div class="space-label">--space-2</div><div class="space-bar-wrap"><div class="space-bar" style="width:8px"></div></div><div class="space-val">8px · base unit</div></div>
+      <div class="space-row"><div class="space-label">--space-3</div><div class="space-bar-wrap"><div class="space-bar" style="width:12px"></div></div><div class="space-val">12px · component internal padding</div></div>
+      <div class="space-row"><div class="space-label">--space-4</div><div class="space-bar-wrap"><div class="space-bar" style="width:16px"></div></div><div class="space-val">16px · card padding, section gaps</div></div>
+      <div class="space-row"><div class="space-label">--space-5</div><div class="space-bar-wrap"><div class="space-bar" style="width:20px"></div></div><div class="space-val">20px · medium gaps</div></div>
+      <div class="space-row"><div class="space-label">--space-6</div><div class="space-bar-wrap"><div class="space-bar" style="width:24px"></div></div><div class="space-val">24px · section padding</div></div>
+      <div class="space-row"><div class="space-label">--space-8</div><div class="space-bar-wrap"><div class="space-bar" style="width:32px"></div></div><div class="space-val">32px · large section gaps</div></div>
+      <div class="space-row"><div class="space-label">--space-10</div><div class="space-bar-wrap"><div class="space-bar" style="width:40px"></div></div><div class="space-val">40px · between major sections</div></div>
+      <div class="space-row"><div class="space-label">--space-12</div><div class="space-bar-wrap"><div class="space-bar" style="width:48px"></div></div><div class="space-val">48px · header heights</div></div>
+      <div class="space-row"><div class="space-label">--space-14</div><div class="space-bar-wrap"><div class="space-bar" style="width:56px"></div></div><div class="space-val">56px · tab bar height</div></div>
+    </div>
+  </section>
+
+  <!-- RADIUS -->
+  <section id="radius">
+    <div class="section-title">Border Radius — 3-value system</div>
+    <div class="radius-row">
+      <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">--radius-sm</div><div class="radius-val">4px · tags, badges</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">--radius-md</div><div class="radius-val">8px · buttons, inputs</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">--radius-lg</div><div class="radius-val">12px · exercise cards</div></div>
+      <div class="radius-item"><div class="radius-box" style="border-radius:9999px;height:40px;width:80px;margin:20px 0"></div><div class="radius-label">--radius-full</div><div class="radius-val">9999px · pills, circles</div></div>
+    </div>
+  </section>
+
+  <!-- ICONS -->
+  <section id="icons">
+    <div class="section-title">Icons — Lucide</div>
+    <div class="callout"><strong>Library:</strong> Lucide icons. Single color (<code>#555555</code>) in the design system. In the app, icons inherit contextual color: pink for active/CTA states, indigo for done/completed sets. <a href="https://lucide.dev/icons/" target="_blank" rel="noopener" style="color:var(--doc-pink-text);font-weight:700;">Browse all icons at lucide.dev ↗</a></div>
+    <div style="font-size:11px;font-weight:600;color:var(--doc-tt);letter-spacing:.08em;margin-bottom:8px;">Bottom Nav</div>
+    <div class="icon-grid" style="margin-bottom:16px;">
+      <div class="icon-item"><i data-lucide="dumbbell"></i><span>dumbbell · Workout</span></div>
+      <div class="icon-item"><i data-lucide="utensils"></i><span>utensils · Macros</span></div>
+      <div class="icon-item"><i data-lucide="trending-up"></i><span>trending-up · Progress</span></div>
+    </div>
+    <div style="font-size:11px;font-weight:600;color:var(--doc-tt);letter-spacing:.08em;margin-bottom:8px;">In-app</div>
+    <div class="icon-grid">
+      <div class="icon-item"><i data-lucide="dumbbell"></i><span>dumbbell</span></div>
+      <div class="icon-item"><i data-lucide="utensils"></i><span>utensils</span></div>
+      <div class="icon-item"><i data-lucide="trending-up"></i><span>trending-up</span></div>
+      <div class="icon-item"><i data-lucide="chevron-left"></i><span>chevron-left</span></div>
+      <div class="icon-item"><i data-lucide="chevron-right"></i><span>chevron-right</span></div>
+      <div class="icon-item"><i data-lucide="check"></i><span>check</span></div>
+      <div class="icon-item"><i data-lucide="trophy"></i><span>trophy</span></div>
+      <div class="icon-item"><i data-lucide="clock"></i><span>clock</span></div>
+      <div class="icon-item"><i data-lucide="flame"></i><span>flame</span></div>
+      <div class="icon-item"><i data-lucide="droplet"></i><span>droplet</span></div>
+      <div class="icon-item"><i data-lucide="moon"></i><span>moon</span></div>
+      <div class="icon-item"><i data-lucide="zap"></i><span>zap</span></div>
+      <div class="icon-item"><i data-lucide="play"></i><span>play</span></div>
+      <div class="icon-item"><i data-lucide="pause"></i><span>pause</span></div>
+      <div class="icon-item"><i data-lucide="refresh-cw"></i><span>refresh-cw</span></div>
+      <div class="icon-item"><i data-lucide="x"></i><span>x</span></div>
+      <div class="icon-item"><i data-lucide="download"></i><span>download</span></div>
+      <div class="icon-item"><i data-lucide="upload"></i><span>upload</span></div>
+      <div class="icon-item"><i data-lucide="settings"></i><span>settings</span></div>
+      <div class="icon-item"><i data-lucide="plus"></i><span>plus</span></div>
+      <div class="icon-item"><i data-lucide="minus"></i><span>minus</span></div>
+      <div class="icon-item"><i data-lucide="calendar"></i><span>calendar</span></div>
+      <div class="icon-item"><i data-lucide="user"></i><span>user</span></div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- BUTTONS -->
+  <section id="buttons">
+    <div class="section-title">Buttons</div>
+
+    <div class="section-sub">Primary — Pink · border-radius: full</div>
+    <div class="callout ind"><strong>4 sizes:</strong> XL = 56px screen CTA (Start Workout). LG = 48px inline CTA (Mark Complete). MD = 36px action pill. SM = 30px utility (Export / Import). All pink fill, all border-radius:full.</div>
+    <div class="dark-preview" style="background:#141414;padding:20px;">
+      <div style="display:grid;grid-template-columns:58px 1fr 1fr 1fr;gap:10px 6px;align-items:center;">
+        <div style="font-size:9px;color:#444;font-weight:700;letter-spacing:.1em;"></div>
+        <div style="font-size:9px;color:#666;font-weight:700;letter-spacing:.1em;text-align:center;">DEFAULT</div>
+        <div style="font-size:9px;color:#666;font-weight:700;letter-spacing:.1em;text-align:center;">HOVER</div>
+        <div style="font-size:9px;color:#666;font-weight:700;letter-spacing:.1em;text-align:center;">DISABLED</div>
+        <!-- XL -->
+        <div style="font-size:9px;color:#555;white-space:nowrap;">XL · 56px</div>
+        <div style="text-align:center;"><div style="height:56px;padding:0 16px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Start Workout</div></div>
+        <div style="text-align:center;"><div style="height:56px;padding:0 16px;border-radius:999px;background:#ff7ec4;color:#5c1038;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Start Workout</div></div>
+        <div style="text-align:center;"><div style="height:56px;padding:0 16px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;opacity:.35;cursor:not-allowed;">Start Workout</div></div>
+        <!-- LG -->
+        <div style="font-size:9px;color:#555;white-space:nowrap;">LG · 48px</div>
+        <div style="text-align:center;"><div style="height:48px;padding:0 16px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Mark Complete</div></div>
+        <div style="text-align:center;"><div style="height:48px;padding:0 16px;border-radius:999px;background:#ff7ec4;color:#5c1038;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Mark Complete</div></div>
+        <div style="text-align:center;"><div style="height:48px;padding:0 16px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;opacity:.35;cursor:not-allowed;">Mark Complete</div></div>
+        <!-- MD -->
+        <div style="font-size:9px;color:#555;white-space:nowrap;">MD · 36px</div>
+        <div style="text-align:center;"><div style="height:36px;padding:0 14px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:12px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Action</div></div>
+        <div style="text-align:center;"><div style="height:36px;padding:0 14px;border-radius:999px;background:#ff7ec4;color:#5c1038;font-size:12px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Action</div></div>
+        <div style="text-align:center;"><div style="height:36px;padding:0 14px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:12px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;opacity:.35;cursor:not-allowed;">Action</div></div>
+        <!-- SM -->
+        <div style="font-size:9px;color:#555;white-space:nowrap;">SM · 30px</div>
+        <div style="text-align:center;"><div style="height:30px;padding:0 10px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:11px;font-weight:500;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><i data-lucide="download" style="width:10px;height:10px;stroke-width:2.5"></i>Export</div></div>
+        <div style="text-align:center;"><div style="height:30px;padding:0 10px;border-radius:999px;background:#ff7ec4;color:#5c1038;font-size:11px;font-weight:500;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><i data-lucide="download" style="width:10px;height:10px;stroke-width:2.5"></i>Export</div></div>
+        <div style="text-align:center;"><div style="height:30px;padding:0 10px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:11px;font-weight:500;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;opacity:.35;cursor:not-allowed;"><i data-lucide="download" style="width:10px;height:10px;stroke-width:2.5"></i>Export</div></div>
+      </div>
+    </div>
+
+    <div class="section-sub">Secondary — Outlined · border-radius: full</div>
+    <div class="callout ind"><strong>Outlined pill.</strong> Default = light bg + grey border. Active/On = pink border + pink tint + dark maroon text. Disabled = opacity 0.35. Used for navigation, dismiss, cancel, presets, reset.</div>
+    <div class="dark-preview" style="padding:20px;">
+      <div style="display:grid;grid-template-columns:58px 1fr 1fr 1fr;gap:10px 6px;align-items:center;">
+        <div style="font-size:9px;color:var(--doc-tt);font-weight:700;letter-spacing:.1em;"></div>
+        <div style="font-size:9px;color:var(--doc-tt);font-weight:700;letter-spacing:.1em;text-align:center;">DEFAULT</div>
+        <div style="font-size:9px;color:var(--doc-tt);font-weight:700;letter-spacing:.1em;text-align:center;">ACTIVE / ON</div>
+        <div style="font-size:9px;color:var(--doc-tt);font-weight:700;letter-spacing:.1em;text-align:center;">DISABLED</div>
+        <!-- XL -->
+        <div style="font-size:9px;color:var(--doc-tt);white-space:nowrap;">XL · 56px</div>
+        <div style="text-align:center;"><div style="height:56px;padding:0 16px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Cancel</div></div>
+        <div style="text-align:center;"><div style="height:56px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,155,215,.5);background:rgba(255,155,215,.12);color:#5c1038;font-size:13px;font-weight:700;display:inline-flex;align-items:center;white-space:nowrap;">Upper A</div></div>
+        <div style="text-align:center;"><div style="height:56px;padding:0 16px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;opacity:.35;cursor:not-allowed;">Cancel</div></div>
+        <!-- LG -->
+        <div style="font-size:9px;color:var(--doc-tt);white-space:nowrap;">LG · 48px</div>
+        <div style="text-align:center;"><div style="height:48px;padding:0 16px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Reset</div></div>
+        <div style="text-align:center;"><div style="height:48px;padding:0 16px;border-radius:999px;border:1px solid rgba(255,155,215,.5);background:rgba(255,155,215,.12);color:#5c1038;font-size:13px;font-weight:700;display:inline-flex;align-items:center;white-space:nowrap;">Active</div></div>
+        <div style="text-align:center;"><div style="height:48px;padding:0 16px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:13px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;opacity:.35;cursor:not-allowed;">Reset</div></div>
+        <!-- MD -->
+        <div style="font-size:9px;color:var(--doc-tt);white-space:nowrap;">MD · 36px</div>
+        <div style="text-align:center;"><div style="height:36px;padding:0 12px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><i data-lucide="chevron-left" style="width:11px;height:11px;stroke-width:2.5"></i>Back</div></div>
+        <div style="text-align:center;"><div style="height:36px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,155,215,.5);background:rgba(255,155,215,.12);color:#5c1038;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">Next<i data-lucide="chevron-right" style="width:11px;height:11px;stroke-width:2.5"></i></div></div>
+        <div style="text-align:center;"><div style="height:36px;padding:0 12px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:12px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;opacity:.35;cursor:not-allowed;">Skip</div></div>
+        <!-- SM -->
+        <div style="font-size:9px;color:var(--doc-tt);white-space:nowrap;">SM · 30px</div>
+        <div style="text-align:center;"><div style="height:30px;padding:0 10px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:11px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;">Done</div></div>
+        <div style="text-align:center;"><div style="height:30px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,155,215,.5);background:rgba(255,155,215,.12);color:#5c1038;font-size:11px;font-weight:700;display:inline-flex;align-items:center;white-space:nowrap;">Active</div></div>
+        <div style="text-align:center;"><div style="height:30px;padding:0 10px;border-radius:999px;border:1px solid #e0e0e0;background:#f0f0f0;color:#555;font-size:11px;font-weight:500;display:inline-flex;align-items:center;white-space:nowrap;opacity:.35;cursor:not-allowed;">Disabled</div></div>
+      </div>
+    </div>
+
+    <div class="section-sub">Dashed — Add Entry</div>
+    <div class="callout"><strong>Pattern:</strong> 1px dashed-border pill with plus icon. Use anywhere a new item can be created inline — meals, exercises, PRs, weight entries. 44px height. border-radius:full.</div>
+    <div class="dark-preview">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <div>
+          <div style="height:44px;border-radius:999px;border:1px dashed var(--pink);display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:0 18px">
+            <i data-lucide="plus" style="width:14px;height:14px;color:var(--pink);stroke-width:2.5"></i>
+            <span style="font-size:13px;font-weight:500;color:var(--pink)">Add exercise</span>
+          </div>
+          <div class="state-label">Exercise list</div>
+        </div>
+        <div>
+          <div style="height:44px;border-radius:999px;border:1px dashed var(--pink);display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:0 18px">
+            <i data-lucide="plus" style="width:14px;height:14px;color:var(--pink);stroke-width:2.5"></i>
+            <span style="font-size:13px;font-weight:500;color:var(--pink)">Log meal</span>
+          </div>
+          <div class="state-label">Meal slot</div>
+        </div>
+        <div>
+          <div style="height:44px;border-radius:999px;border:1px dashed var(--pink);display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;padding:0 18px">
+            <i data-lucide="plus" style="width:14px;height:14px;color:var(--pink);stroke-width:2.5"></i>
+            <span style="font-size:13px;font-weight:500;color:var(--pink)">Add PR</span>
+          </div>
+          <div class="state-label">PR table</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAGS -->
+  <section id="tags">
+    <div class="section-title">Tags &amp; Badges</div>
+    <div class="section-sub">Light surface</div>
+    <div class="dark-preview">
+      <div class="comp-row">
+        <div class="state-wrap"><span class="tag">PR</span><div class="state-label">PR (indigo)</div></div>
+        <div class="state-wrap"><span class="tag pink">Active</span><div class="state-label">Active (pink)</div></div>
+        <div class="state-wrap"><span class="tag"><i data-lucide="check" style="width:8px;height:8px;stroke-width:2.5"></i> Done</span><div class="state-label">Done (indigo)</div></div>
+        <div class="state-wrap"><span class="tag warn">Over</span><div class="state-label">Over target</div></div>
+        <div class="state-wrap"><span class="tag err">Alert</span><div class="state-label">Danger</div></div>
+      </div>
+    </div>
+    <div class="section-sub">Dark surface — day-type badges (app headers)</div>
+    <div class="callout ind"><strong>Rule:</strong> Use <code>.tag.dark.pink</code> on dark headers (#141414). Light text only — never use light-surface tag colors on dark backgrounds.</div>
+    <div class="dark-preview" style="background:#141414;">
+      <div class="comp-row">
+        <div class="state-wrap"><span class="tag dark pink">Training Day</span><div class="state-label" style="color:#555">Training</div></div>
+        <div class="state-wrap"><span class="tag dark ind">Running Day</span><div class="state-label" style="color:#555">Running</div></div>
+        <div class="state-wrap"><span class="tag dark">Rest Day</span><div class="state-label" style="color:#555">Rest</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INPUTS -->
+  <section id="inputs">
+    <div class="section-title">Inputs</div>
+    <div class="dark-preview">
+      <div class="comp-row" style="align-items:flex-start;flex-direction:column;gap:12px;">
+        <div>
+          <input class="input-demo" placeholder="Weight (lbs)">
+          <div class="state-label" style="text-align:left;margin-top:4px;">Default</div>
+        </div>
+        <div>
+          <input class="input-demo" value="185" style="border-color:var(--pink)">
+          <div class="state-label" style="text-align:left;margin-top:4px;">Focus (pink border)</div>
+        </div>
+        <div>
+          <input class="input-demo" value="185" style="border-color:var(--err)">
+          <div class="state-label" style="text-align:left;margin-top:4px;">Error</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <section id="controls">
+    <div class="section-title">Controls</div>
+
+    <div class="section-sub">Checkbox</div>
+    <div class="dark-preview">
+      <div class="comp-row">
+        <div class="state-wrap"><div class="cb"></div><div class="state-label">Unchecked</div></div>
+        <div class="state-wrap"><div class="cb checked"></div><div class="state-label">Checked (indigo)</div></div>
+        <div class="state-wrap"><div class="cb" style="opacity:.4"></div><div class="state-label">Disabled</div></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- CARDS -->
+  <section id="cards">
+    <div class="section-title">Cards</div>
+
+    <!-- ── WEEK VIEW DAY CARDS ───────────────────────────────── -->
+    <div class="section-sub">Week View — Day Cards</div>
+    <div class="callout ind"><strong>Layout:</strong> Checkbox LEFT · Date col (28px, day-name + number stacked) · Workout name flex:1 · Chevron right (collapsible only). 1px border. Padding 12px 14px. Gap 10px. Radius 8px.</div>
+    <div class="dark-preview" style="display:flex;flex-direction:column;gap:6px;max-width:380px;">
+      <!-- Upcoming / Default -->
+      <div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;">
+        <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;"></div>
+          <div style="width:28px;flex-shrink:0;text-align:center;">
+            <div style="font-size:9px;font-weight:600;color:#555;">Thu</div>
+            <div style="font-size:11px;color:#555;margin-top:1px;">18</div>
+          </div>
+          <div style="flex:1;font-size:14px;font-weight:500;color:#111;">Upper A</div>
+          <i data-lucide="chevron-down" style="width:14px;height:14px;color:#a3a3a3;stroke-width:2;flex-shrink:0;"></i>
+        </div>
+      </div>
+      <div class="state-label" style="margin-top:-2px;">Default / Upcoming · neutral border · empty checkbox · collapsed</div>
+
+      <!-- Today / Selected / Active -->
+      <div style="background:#fff;border:1px solid #FF9BD7;border-radius:8px;margin-top:4px;">
+        <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;"></div>
+          <div style="width:28px;flex-shrink:0;text-align:center;">
+            <div style="font-size:9px;font-weight:600;color:#5c1038;">Tue</div>
+            <div style="font-size:11px;font-weight:600;color:#FF9BD7;margin-top:1px;">16</div>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:14px;font-weight:600;color:#111;">Lower B</span>
+            <span style="display:inline-flex;background:#FF9BD7;color:#5c1038;font-size:9px;font-weight:600;padding:2px 7px;border-radius:9999px;">Today</span>
+          </div>
+          <i data-lucide="chevron-up" style="width:14px;height:14px;color:#FF9BD7;stroke-width:2;flex-shrink:0;"></i>
+        </div>
+      </div>
+      <div class="state-label" style="margin-top:-2px;">Selected / Today · pink border · "Today" pill · chevron-up (expanded)</div>
+
+      <!-- Completed / Done -->
+      <div style="background:#fff;border:1px solid #c5caff;border-radius:8px;margin-top:4px;">
+        <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:4px;background:#4D5FFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="check" style="width:10px;height:10px;color:#fff;stroke-width:3"></i></div>
+          <div style="width:28px;flex-shrink:0;text-align:center;">
+            <div style="font-size:9px;font-weight:600;color:#566BFF;">Mon</div>
+            <div style="font-size:11px;color:#a0aaff;margin-top:1px;">15</div>
+          </div>
+          <div style="flex:1;font-size:14px;font-weight:500;color:#111;">Lower A</div>
+          <i data-lucide="chevron-down" style="width:14px;height:14px;color:#a3a3a3;stroke-width:2;flex-shrink:0;"></i>
+        </div>
+      </div>
+      <div class="state-label" style="margin-top:-2px;">Completed · indigo border + filled checkbox · collapsed</div>
+
+      <!-- Disabled / Rest -->
+      <div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;margin-top:4px;">
+        <div style="padding:12px 14px;display:flex;align-items:center;gap:10px;">
+          <div style="width:20px;height:20px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;opacity:.5;"></div>
+          <div style="width:28px;flex-shrink:0;text-align:center;">
+            <div style="font-size:9px;font-weight:600;color:#ccc;">Wed</div>
+            <div style="font-size:11px;color:#ccc;margin-top:1px;">17</div>
+          </div>
+          <div style="flex:1;font-size:14px;color:#ccc;">Rest</div>
+        </div>
+      </div>
+      <div class="state-label" style="margin-top:-2px;">Disabled / Rest · no workout · no chevron · muted text</div>
+    </div>
+
+    <!-- ── EXERCISE ROW CARDS ─────────────────────────────────── -->
+    <div class="section-sub" style="margin-top:32px;">Exercise Row — Workout Detail</div>
+    <div class="callout ind"><strong>Three states:</strong> Default = pending, neutral border. Active = pink 2px border (current set being logged). Checked/Done = indigo bg + border. Grid: Set# · prev · weight input · reps input · checkbox.</div>
+    <div class="dark-preview" style="max-width:380px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <!-- Checked / Done -->
+        <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 22px;gap:0 8px;align-items:center;padding:8px 0;border-bottom:1px solid #e8e8e8;">
+          <span style="font-size:13px;font-weight:600;color:#111;">1</span>
+          <span style="font-size:11px;color:#ccc;">210 × 6</span>
+          <div style="height:34px;border-radius:4px;background:#eef0ff;border:1px solid #c5caff;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#1a2580;">215</span></div>
+          <div style="height:34px;border-radius:4px;background:#eef0ff;border:1px solid #c5caff;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;font-weight:600;color:#1a2580;">6</span></div>
+          <div style="width:22px;height:22px;border-radius:4px;background:#4D5FFF;border:1px solid #4D5FFF;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div>
+        </div>
+        <div class="state-label" style="margin-top:-2px;">Checked · indigo input cells + checkbox</div>
+        <!-- Active -->
+        <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 22px;gap:0 8px;align-items:center;padding:8px 0;border-bottom:1px solid #e8e8e8;margin-top:6px;">
+          <span style="font-size:13px;font-weight:600;color:#111;">3</span>
+          <span style="font-size:11px;color:#ccc;">205 × 6</span>
+          <div style="height:34px;border-radius:4px;background:#fff;border:2px solid #FF9BD7;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:#ccc;">—</span></div>
+          <div style="height:34px;border-radius:4px;background:#fff;border:2px solid #FF9BD7;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:#ccc;">—</span></div>
+          <div style="width:22px;height:22px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;"></div>
+        </div>
+        <div class="state-label" style="margin-top:-2px;">Active · pink 2px border on inputs</div>
+        <!-- Default / Pending -->
+        <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 22px;gap:0 8px;align-items:center;padding:8px 0;margin-top:6px;">
+          <span style="font-size:13px;font-weight:500;color:#ccc;">4</span>
+          <span style="font-size:11px;color:#ccc;">205 × 6</span>
+          <div style="height:34px;border-radius:4px;background:#fafafa;border:1px solid #e8e8e8;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:#ccc;">—</span></div>
+          <div style="height:34px;border-radius:4px;background:#fafafa;border:1px solid #e8e8e8;display:flex;align-items:center;justify-content:center;"><span style="font-size:13px;color:#ccc;">—</span></div>
+          <div style="width:22px;height:22px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;opacity:.5;"></div>
+        </div>
+        <div class="state-label" style="margin-top:-2px;">Default / Pending · muted neutral cells</div>
+      </div>
+    </div>
+
+    <!-- ── REST TIMER GLASS CARD ──────────────────────────────── -->
+    <div class="section-sub" style="margin-top:32px;">Rest Timer — Glass Card</div>
+    <div class="callout ind"><strong>Surface:</strong> Light frosted glass over dark app content. background:rgba(255,255,255,0.82) + blur(28px). border:1px solid rgba(255,255,255,0.6). border-radius:24px. Overlays the active exercise context. Preset buttons use Secondary outlined style. Active preset = pink border + tint.</div>
+    <div class="dark-preview" style="background:#141414;padding:0;border-radius:12px;overflow:hidden;position:relative;min-height:360px;">
+      <!-- Background exercise context -->
+      <div style="padding:14px 20px;background:#fafafa;position:absolute;inset:0;overflow:hidden;">
+        <div style="font-size:14px;font-weight:500;color:#111;display:flex;align-items:center;gap:6px;margin-bottom:3px;">Back Squat <span class="pr-tag">PR</span></div>
+        <div style="font-size:11px;color:#a3a3a3;margin-bottom:12px;">4×6 · 65%</div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <div style="background:#eef0ff;border:1px solid #c5caff;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:500;color:#1a2580;">S1</span><span style="font-size:12px;color:#1a2580;opacity:.7;">· 215 lbs</span><div style="margin-left:auto;width:22px;height:22px;border-radius:4px;background:#4D5FFF;border:1px solid #4D5FFF;display:flex;align-items:center;justify-content:center;"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div></div>
+          <div style="background:#eef0ff;border:1px solid #c5caff;border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:8px;"><span style="font-size:12px;font-weight:500;color:#1a2580;">S2</span><span style="font-size:12px;color:#1a2580;opacity:.7;">· 215 lbs</span><div style="margin-left:auto;width:22px;height:22px;border-radius:4px;background:#4D5FFF;border:1px solid #4D5FFF;display:flex;align-items:center;justify-content:center;"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div></div>
+        </div>
+      </div>
+      <!-- Dimmed overlay -->
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,.18);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:1;"></div>
+      <!-- Glass card -->
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;padding:16px;">
+        <div style="width:100%;background:rgba(255,255,255,0.88);backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.12);">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px;">
+            <div>
+              <div style="font-size:16px;font-weight:500;color:#0f0f0f;">Rest timer</div>
+              <div style="font-size:11px;color:#a3a3a3;margin-top:2px;">Recommended · Back Squat</div>
+            </div>
+            <div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;">
+              <i data-lucide="x" style="width:15px;height:15px;color:#555;stroke-width:2.5"></i>
+            </div>
+          </div>
+          <div style="font-size:56px;font-weight:300;color:#0f0f0f;text-align:center;letter-spacing:-3px;margin:12px 0 10px;">2:00</div>
+          <div style="display:flex;justify-content:center;gap:8px;margin-bottom:10px;">
+            <div style="border-radius:999px;border:1px solid rgba(0,0,0,.12);padding:8px 18px;background:rgba(0,0,0,.04);font-size:12px;font-weight:500;color:#555;">− 10s</div>
+            <div style="border-radius:999px;border:1px solid rgba(0,0,0,.12);padding:8px 18px;background:rgba(0,0,0,.04);font-size:12px;font-weight:500;color:#555;">+ 10s</div>
+          </div>
+          <div style="display:flex;gap:5px;margin-bottom:14px;">
+            <div style="flex:1;height:34px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);font-size:12px;font-weight:500;color:#a3a3a3;">1 min</div>
+            <div style="flex:1;height:34px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);font-size:12px;font-weight:500;color:#a3a3a3;">2 min</div>
+            <div style="flex:1;height:34px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid #FF9BD7;background:rgba(255,155,215,.15);font-size:12px;font-weight:600;color:#5c1038;">3 min</div>
+            <div style="flex:1;height:34px;display:flex;align-items:center;justify-content:center;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);font-size:12px;font-weight:500;color:#a3a3a3;">4 min</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <div style="flex:1;height:48px;border-radius:999px;background:#FF9BD7;color:#5c1038;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer;">Start</div>
+            <div style="height:48px;padding:0 18px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);font-size:13px;font-weight:500;color:#555;display:flex;align-items:center;justify-content:center;cursor:pointer;">Reset</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MACROS SCREEN PATTERNS -->
+  <section id="macros-patterns">
+    <div class="section-title">Macros Screen</div>
+    <div class="callout"><strong>Data source:</strong> Claude populates from chat logs — read-only display. User never types macros directly into the app.</div>
+
+    <div class="section-sub">Macro Progress Bars — dark surface</div>
+    <div class="callout ind"><strong>Colors:</strong> Protein = Indigo · Carbs = Coral · Fat = Yellow · Calories = Red. Left/over pill shows status. On dark bg (#1c1c1c).</div>
+    <div class="dark-preview" style="background:#1c1c1c;display:flex;flex-direction:column;gap:8px;">
+      <!-- Protein on track -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:500;color:#fff">Protein</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:11px;color:#a0aaff">142 / 160g</span>
+            <span style="font-size:10px;font-weight:500;color:#a3a3a3;background:#222;border-radius:4px;padding:1px 6px">18g left</span>
+          </div>
+        </div>
+        <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:89%;background:var(--ind);border-radius:999px"></div></div>
+      </div>
+      <!-- Carbs over -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:500;color:#fff">Carbs</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:11px;color:#ff8a6e">240 / 200g</span>
+            <span style="font-size:10px;font-weight:500;color:#ef4444;background:rgba(239,68,68,.15);border-radius:4px;padding:1px 6px">40g over</span>
+          </div>
+        </div>
+        <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:100%;background:var(--coral);border-radius:999px"></div></div>
+      </div>
+      <!-- Fat on track -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:500;color:#fff">Fat</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:11px;color:#d4d800">40 / 65g</span>
+            <span style="font-size:10px;font-weight:500;color:#a3a3a3;background:#222;border-radius:4px;padding:1px 6px">25g left</span>
+          </div>
+        </div>
+        <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:62%;background:var(--yel);border-radius:999px"></div></div>
+      </div>
+      <!-- Calories over -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:500;color:#fff">Calories</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:11px;color:#f87171">2,480 / 2,400</span>
+            <span style="font-size:10px;font-weight:500;color:#ef4444;background:rgba(239,68,68,.15);border-radius:4px;padding:1px 6px">80 over</span>
+          </div>
+        </div>
+        <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:100%;background:#ef4444;border-radius:999px"></div></div>
+      </div>
+    </div>
+
+    <div class="section-sub" style="margin-top:24px;">Meal Blocks — expandable</div>
+    <div class="callout ind"><strong>Pattern:</strong> Collapsed = header only (name + macro summary + chevron). Expanded = ingredient rows. Not logged = passive dashed card.</div>
+    <div class="dark-preview" style="display:flex;flex-direction:column;gap:6px;">
+      <!-- Collapsed -->
+      <div style="background:#fff;border-radius:8px;border:1px solid #e8e8e8;">
+        <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:500;color:#0f0f0f">Pre-workout</div>
+            <div style="font-size:11px;color:#a3a3a3;margin-top:1px">P 40 · C 30 · F 5 · 330 kcal</div>
+          </div>
+          <i data-lucide="chevron-down" style="width:16px;height:16px;color:#a3a3a3;stroke-width:2;flex-shrink:0"></i>
+        </div>
+      </div>
+      <!-- Expanded -->
+      <div style="background:#fff;border-radius:8px;border:1px solid #e8e8e8;">
+        <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:13px;font-weight:500;color:#0f0f0f">Breakfast</div>
+            <div style="font-size:11px;color:#a3a3a3;margin-top:1px">P 52 · C 45 · F 18 · 554 kcal</div>
+          </div>
+          <i data-lucide="chevron-up" style="width:16px;height:16px;color:#FF9BD7;stroke-width:2;flex-shrink:0"></i>
+        </div>
+        <div style="border-top:1px solid #e8e8e8;">
+          <div style="padding:7px 14px 3px;display:flex;justify-content:space-between"><span style="font-size:12px;color:#555">Eggs (3 whole)</span><span style="font-size:11px;color:#a3a3a3">P 18 · C 2 · F 15 · 215</span></div>
+          <div style="padding:3px 14px 7px;display:flex;justify-content:space-between"><span style="font-size:12px;color:#555">Oats (½ cup)</span><span style="font-size:11px;color:#a3a3a3">P 5 · C 27 · F 3 · 150</span></div>
+        </div>
+      </div>
+      <!-- Not logged -->
+      <div style="background:#fff;border-radius:8px;border:1px dashed #e8e8e8;">
+        <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:13px;font-weight:500;color:#a3a3a3">Dinner</span>
+          <span style="font-size:11px;color:#cccccc">Not logged</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESS SCREEN PATTERNS -->
+  <section id="progress-patterns">
+    <div class="section-title">Progress Screen</div>
+
+    <div class="section-sub">PR Table</div>
+    <div class="callout ind"><strong>Pattern:</strong> Auto-populated from workout logs. Editable via pencil icon per row. Add PR entry at bottom. Indigo for weight values.</div>
+    <div class="dark-preview">
+      <div style="width:300px;">
+        <!-- Header -->
+        <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;padding:5px 10px;background:#1c1c1c;border-radius:8px 8px 0 0;border:1px solid #e0e0e0;border-bottom:none">
+          <span style="font-size:9px;font-weight:600;color:#a3a3a3">Exercise</span>
+          <span style="font-size:9px;font-weight:600;color:#a3a3a3;text-align:right">Best</span>
+          <span style="font-size:9px;font-weight:600;color:#a3a3a3;text-align:right">Date</span>
+          <span></span>
+        </div>
+        <div style="border:1px solid #e0e0e0;border-radius:0 0 8px 8px;overflow:hidden;background:#fff;">
+          <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px;border-bottom:1px solid #e8e8e8">
+            <div><div style="font-size:12px;font-weight:500;color:#0f0f0f">Back Squat</div><div style="font-size:10px;color:#a3a3a3;margin-top:1px">4×6</div></div>
+            <div style="text-align:right"><span style="font-size:12px;font-weight:600;color:#1a2580">215</span><span style="font-size:10px;color:#a3a3a3"> lbs</span></div>
+            <div style="text-align:right;font-size:10px;color:#a3a3a3">Jun 16</div>
+            <div style="text-align:right"><i data-lucide="pencil" style="width:12px;height:12px;color:#a3a3a3;stroke-width:2"></i></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px;">
+            <div><div style="font-size:12px;font-weight:500;color:#0f0f0f">Leg Press</div><div style="font-size:10px;color:#a3a3a3;margin-top:1px">3×12</div></div>
+            <div style="text-align:right"><span style="font-size:12px;font-weight:600;color:#1a2580">320</span><span style="font-size:10px;color:#a3a3a3"> lbs</span></div>
+            <div style="text-align:right;font-size:10px;color:#a3a3a3">Jun 14</div>
+            <div style="text-align:right"><i data-lucide="pencil" style="width:12px;height:12px;color:#a3a3a3;stroke-width:2"></i></div>
+          </div>
+        </div>
+        <!-- Add PR -->
+        <div style="height:44px;border-radius:999px;border:1px dashed #FF9BD7;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;margin-top:10px">
+          <i data-lucide="plus" style="width:14px;height:14px;color:#FF9BD7;stroke-width:2.5"></i>
+          <span style="font-size:13px;font-weight:500;color:#FF9BD7">Add PR</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-sub" style="margin-top:24px;">Weight Log — graph + entries</div>
+    <div class="callout ind"><strong>Pattern:</strong> Sparkline chart (pink) + stat chips (current / start / change) + entry rows with pencil edit + Add Entry CTA.</div>
+    <div class="dark-preview" style="display:flex;flex-direction:column;gap:8px;">
+      <!-- Stat chips -->
+      <div style="display:flex;gap:8px;">
+        <div style="flex:1;background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:600;color:#a3a3a3;margin-bottom:2px">Current</div>
+          <div style="font-size:16px;font-weight:600;color:#0f0f0f">162.4<span style="font-size:10px;font-weight:400;color:#a3a3a3"> lbs</span></div>
+        </div>
+        <div style="flex:1;background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:600;color:#a3a3a3;margin-bottom:2px">Start</div>
+          <div style="font-size:16px;font-weight:600;color:#0f0f0f">165.8<span style="font-size:10px;font-weight:400;color:#a3a3a3"> lbs</span></div>
+        </div>
+        <div style="flex:1;background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:8px 10px">
+          <div style="font-size:9px;font-weight:600;color:#a3a3a3;margin-bottom:2px">Change</div>
+          <div style="font-size:16px;font-weight:600;color:#22c55e">−3.4<span style="font-size:10px;font-weight:400;color:#a3a3a3"> lbs</span></div>
+        </div>
+      </div>
+      <!-- Sparkline -->
+      <div style="background:#fff;border:1px solid #e8e8e8;border-radius:8px;padding:10px 12px">
+        <svg viewBox="0 0 256 60" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;">
+          <line x1="0" y1="10" x2="256" y2="10" stroke="#f0f0f0" stroke-width="1"/>
+          <line x1="0" y1="30" x2="256" y2="30" stroke="#f0f0f0" stroke-width="1"/>
+          <line x1="0" y1="50" x2="256" y2="50" stroke="#f0f0f0" stroke-width="1"/>
+          <path d="M10,8 C50,12 90,28 130,24 C170,20 200,38 246,34" fill="none" stroke="#FF9BD7" stroke-width="1.8" stroke-linecap="round"/>
+          <circle cx="10" cy="8" r="2.5" fill="#FF9BD7"/>
+          <circle cx="130" cy="24" r="2.5" fill="#FF9BD7"/>
+          <circle cx="246" cy="34" r="3" fill="#fff" stroke="#FF9BD7" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- NAVIGATION -->
+  <section id="navigation">
+    <div class="section-title">Navigation</div>
+
+    <div class="section-sub">Week Tabs</div>
+    <div class="callout ind"><strong>Pattern:</strong> Horizontal tab row on dark surface (#1c1c1c). Text-only labels (W3, W4 …). Active = white text + 2px pink bottom border. Inactive = #555 text. Scrollable when weeks overflow. 1px border-bottom on container separates from card list below.</div>
+    <div class="dark-preview" style="background:#1c1c1c;padding:0 18px;border-radius:8px;border:1px solid #2a2a2a;">
+      <div style="display:flex;border-bottom:1px solid #2a2a2a;margin:0 -18px;padding:0 18px;overflow:hidden;">
+        <div style="padding:11px 12px 9px;font-size:12px;font-weight:500;color:#555;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;">W3</div>
+        <div style="padding:11px 12px 9px;font-size:12px;font-weight:500;color:#555;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;">W4</div>
+        <div style="padding:11px 12px 9px;font-size:12px;font-weight:500;color:#555;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;">W5</div>
+        <div style="padding:11px 12px 9px;font-size:12px;font-weight:500;color:#fff;border-bottom:2px solid #FF9BD7;white-space:nowrap;cursor:pointer;">W6</div>
+        <div style="padding:11px 12px 9px;font-size:12px;font-weight:500;color:#555;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;">W7</div>
+        <div style="padding:11px 12px 9px;font-size:12px;font-weight:500;color:#555;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;">W8</div>
+      </div>
+      <div style="padding:10px 0;font-size:11px;color:#444;">Active (W6) = white + 2px pink underline · Inactive = #555</div>
+    </div>
+
+    <div class="section-sub">Tab Bar</div>
+    <div class="dark-preview" style="background:#0f0f0f;">
+      <div class="tab-dark" style="display:inline-flex;background:#141414;border:1px solid #222;border-radius:var(--r-lg);overflow:hidden;">
+        <div class="tab-item on">
+          <i data-lucide="dumbbell"></i>
+          <span>Workout</span>
+        </div>
+        <div class="tab-item">
+          <i data-lucide="utensils"></i>
+          <span>Macros</span>
+        </div>
+        <div class="tab-item">
+          <i data-lucide="trending-up"></i>
+          <span>Progress</span>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#666;margin-top:10px;">Active = Pink #FF9BD7 · Inactive = #555 · Container = dark (#0f0f0f)</div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section id="feedback">
+    <div class="section-title">Feedback</div>
+
+    <div class="section-sub">Timer Display</div>
+    <div class="dark-preview">
+      <div class="comp-row">
+        <div class="state-wrap"><div class="timer">01:30</div><div class="state-label">Idle</div></div>
+        <div class="state-wrap"><div class="timer" style="color:var(--pink)">00:45</div><div class="state-label">Active (pink)</div></div>
+        <div class="state-wrap"><div class="timer" style="color:var(--ind-t)">00:00</div><div class="state-label">Done (indigo)</div></div>
+      </div>
+    </div>
+
+    <div class="section-sub" id="celebration">Celebration — Workout Complete</div>
+    <div class="callout"><strong>Triggers:</strong> (1) All exercises marked done — Workout Complete. (2) PR logged on any set. Uses brand palette — pink, indigo, mint, yellow.</div>
+    <div class="dark-preview" style="position:relative;overflow:hidden;min-height:160px;">
+      <canvas id="confetti-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
+      <div style="position:relative;z-index:2;text-align:center;padding:12px 0 4px;">
+        <div style="font-size:22px;font-weight:700;color:#111;margin-bottom:3px;display:flex;align-items:center;justify-content:center;gap:8px"><span style="display:inline-flex;width:28px;height:28px;border-radius:4px;background:var(--ind);align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:14px;height:14px;color:#fff;stroke-width:3"></i></span>Workout Complete</div>
+        <div style="font-size:13px;color:#777;margin-bottom:20px">Lower B · 6 exercises · 47 min</div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button onclick="launchConfetti()" class="btn-primary" style="margin:0;display:inline-flex;">
+            <i data-lucide="sparkles" style="width:16px;height:16px"></i>&nbsp;Workout done
+          </button>
+          <button onclick="launchConfetti()" class="btn-primary" style="margin:0;display:inline-flex;background:var(--ind);color:#fff;">
+            <i data-lucide="trophy" style="width:16px;height:16px"></i>&nbsp;PR logged
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- SCREENS -->
+  <section id="screens">
+    <div class="section-title">Workout Screens</div>
+    <div class="callout"><strong>Flow:</strong> List → Detail → Timer. Approved design from <code>workout-preview.html</code>. <a href="../workout-preview.html" target="_blank">Open full preview ↗</a></div>
+    <div class="screens-grid">
+      <div class="phone-wrap">
+        <div class="phone-label">List — Session Overview</div>
+        <div class="screen-frame"><iframe src="../workout-preview.html?screen" scrolling="no"></iframe></div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-label">Detail — Active Exercise</div>
+        <div class="screen-frame"><iframe src="../workout-preview.html?screen#detail" scrolling="no"></iframe></div>
+      </div>
+      <div class="phone-wrap">
+        <div class="phone-label">Timer — Rest</div>
+        <div class="screen-frame"><iframe src="../workout-preview.html?screen#timer" scrolling="no"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- WORKOUT LIST SCREEN -->
+  <section id="workout-list">
+    <div class="section-title">Workout List Screen</div>
+    <div class="callout"><strong>Entry point.</strong> Full week view — 7 day rows showing session name, completion state, and today's position. Today's row expands inline to show exercises + Continue/Start CTA. Tap any other row to expand it. Phase progress bar + scrollable week tabs sit above the list.</div>
+
+    <div class="section-sub">Phase Progress Bar</div>
+    <div class="callout ind"><strong>Pattern:</strong> Phase label + "Wk N / N" right. Segmented bar below — one pill per week. Completed = indigo. Current = pink (slightly taller + glow halo). Future = muted #333. Gap between segments = 4px. Sits on --dk2.</div>
+    <div class="dark-preview" style="background:#1c1c1c;padding:10px 20px 14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:12px;font-weight:500;color:#aaa">Phase 2 · <span style="color:#555">Build</span></span>
+        <span style="font-size:11px;color:#555">Wk 6 / 8</span>
+      </div>
+      <!-- Segmented bar: 5 done (indigo), 1 current (pink), 2 future (muted) -->
+      <div style="display:flex;align-items:center;gap:4px">
+        <div style="flex:1;height:5px;border-radius:999px;background:var(--ind)"></div>
+        <div style="flex:1;height:5px;border-radius:999px;background:var(--ind)"></div>
+        <div style="flex:1;height:5px;border-radius:999px;background:var(--ind)"></div>
+        <div style="flex:1;height:5px;border-radius:999px;background:var(--ind)"></div>
+        <div style="flex:1;height:5px;border-radius:999px;background:var(--ind)"></div>
+        <div style="flex:1;height:7px;border-radius:999px;background:var(--pink);box-shadow:0 0 8px rgba(255,155,215,.6)"></div>
+        <div style="flex:1;height:5px;border-radius:999px;background:#333"></div>
+        <div style="flex:1;height:5px;border-radius:999px;background:#333"></div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:0;"><strong>Day card states</strong> (upcoming, today, completed, disabled) are documented in <a href="#cards" style="color:var(--doc-pink-text);font-weight:700;">Cards → Week View</a>. Week tab component is documented in <a href="#navigation" style="color:var(--doc-pink-text);font-weight:700;">Navigation → Week Tabs</a>.</div>
+
+    <div class="section-sub">Bottom Actions</div>
+    <div class="callout ind"><strong>Hierarchy:</strong> Add exercise = primary dashed CTA (44px). Export + Import = secondary ghost (40px), separated by border-top. Utility — never compete with the exercise list.</div>
+    <div class="dark-preview">
+      <div style="width:300px">
+        <div style="height:44px;border-radius:999px;border:1px dashed #FF9BD7;display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;margin-top:4px">
+          <i data-lucide="plus" style="width:14px;height:14px;color:#FF9BD7;stroke-width:2.5"></i>
+          <span style="font-size:13px;font-weight:500;color:#FF9BD7">Add exercise</span>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--doc-brd)">
+          <div style="flex:1;height:40px;border-radius:999px;background:rgba(0,0,0,.04);border:1px solid var(--doc-brd);color:#555;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer">
+            <i data-lucide="download" style="width:13px;height:13px;stroke-width:2"></i> Export
+          </div>
+          <div style="flex:1;height:40px;border-radius:999px;background:rgba(0,0,0,.04);border:1px solid var(--doc-brd);color:#555;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:5px;cursor:pointer">
+            <i data-lucide="upload" style="width:13px;height:13px;stroke-width:2"></i> Import
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- EXERCISE DETAIL SCREEN -->
+  <section id="workout-detail">
+    <div class="section-title">Exercise Detail Screen</div>
+    <div class="callout"><strong>Active set logging.</strong> Accessed by tapping any row in the List view. Shows exercise name, all sets, and auto-launches the rest timer after each set is checked.</div>
+
+    <div class="section-sub">Header + Target Weight</div>
+    <div class="callout ind"><strong>Rule (all screens):</strong> Date small on top, exercise name large below. PR tag inline with name. <strong>Target weight row:</strong> Label "Target" + large indigo number + calculation context (% × PR value). Shown as reference — user taps set row to log actual weight.</div>
+    <div class="dark-preview" style="background:#141414;padding:14px 16px 12px;">
+      <div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+          <span style="font-size:15px;font-weight:500;color:#fff">Back Squat</span>
+          <span style="display:inline-flex;align-items:center;gap:3px;border-radius:999px;padding:2px 6px;background:#DFE0FF;color:#1a2580;border:1px solid rgba(77,95,255,.25);font-size:9px;font-weight:500;white-space:nowrap;">
+            PR
+          </span>
+        </div>
+        <div style="font-size:11px;color:#7b7b7b;margin-bottom:8px">4 × 6 · 65% 1RM</div>
+        <div style="display:flex;align-items:baseline;gap:6px">
+          <span style="font-size:10px;font-weight:500;color:#7b7b7b">Target</span>
+          <span style="font-size:16px;font-weight:600;color:var(--ind);line-height:1">215 lbs</span>
+          <span style="font-size:10px;color:#555">65% × PR 330</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-sub" style="margin-top:24px;">Navigation Pills</div>
+    <div class="callout ind"><strong>Pattern:</strong> "← All exercises" (left, returns to List) + "Next →" (right, advances). Both secondary outlined — never pink. Set rows are the primary action.</div>
+    <div class="dark-preview" style="background:#141414;padding:12px 20px;">
+      <div style="display:flex;gap:8px;align-items:center">
+        <div style="padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#a3a3a3;font-size:12px;font-weight:500;display:flex;align-items:center;gap:5px;cursor:pointer">
+          <i data-lucide="chevron-left" style="width:13px;height:13px;stroke-width:2.5"></i> All exercises
+        </div>
+        <div style="margin-left:auto;padding:8px 14px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:#a3a3a3;font-size:12px;font-weight:500;display:flex;align-items:center;gap:5px;cursor:pointer">
+          Next <i data-lucide="chevron-right" style="width:13px;height:13px;stroke-width:2.5"></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-sub" style="margin-top:24px;">Set Completion Flow</div>
+    <div class="callout ind"><strong>State chain:</strong> done (indigo card + tint, shows logged weight) → active (pink-tinted card border, empty weight — user types actual) → pending (neutral card, muted). Card system. Previous session weights are NOT pre-filled. Checking a set triggers rest timer.</div>
+    <div class="dark-preview">
+      <div style="display:flex;flex-direction:column;gap:8px;width:100%;">
+        <div class="set-row done-row">
+          <div class="sr-label" style="color:#1a2580">S1<span class="sr-reps-inline"> · 6×</span></div>
+          <div class="sr-weight"><div class="wv" style="color:#1a2580">215</div><div class="wu" style="color:#1a2580">lbs</div></div>
+          <div class="cb-set done" style="width:22px;height:22px;border-radius:4px;background:var(--ind);border:1px solid var(--ind);display:flex;align-items:center;justify-content:center;"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div>
+        </div>
+        <div class="set-row active-row">
+          <div class="sr-label">S2<span class="sr-reps-inline"> · 6×</span></div>
+          <div class="sr-weight sr-input"><div class="wv" style="color:#ccc">—</div><div class="wu">lbs</div></div>
+          <div style="width:22px;height:22px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;"></div>
+        </div>
+        <div class="set-row pending-row">
+          <div class="sr-label">S3<span class="sr-reps-inline"> · 6×</span></div>
+          <div class="sr-weight" style="background:#f4f4f4;"><div class="wv" style="color:#ccc">—</div><div class="wu">lbs</div></div>
+          <div style="width:22px;height:22px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;"></div>
+        </div>
+        <div class="set-row pending-row">
+          <div class="sr-label">S4<span class="sr-reps-inline"> · 6×</span></div>
+          <div class="sr-weight" style="background:#f4f4f4;"><div class="wv" style="color:#ccc">—</div><div class="wu">lbs</div></div>
+          <div style="width:22px;height:22px;border-radius:4px;border:1px solid #d0d0d0;flex-shrink:0;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- REST TIMER SCREEN -->
+  <section id="rest-timer">
+    <div class="section-title">Rest Timer Screen</div>
+    <div class="callout"><strong>Trigger:</strong> Auto-launches after any set checkbox is checked. Full dedicated screen — not a modal overlay. Light frosted-glass card on dark bg. Recommended duration pre-selected by exercise type.</div>
+
+    <div class="section-sub">Full Timer Layout</div>
+    <div class="callout ind"><strong>Composition:</strong> Light glass card overlaid on exercise context (set pills visible behind). Dismiss × → exercise name → countdown → ± 10s → 4 preset pills → Start + Reset. See <a href="#cards">Cards → Rest Timer</a> for the full interactive specimen.</div>
+    <div class="callout"><strong>Active preset:</strong> pink border + pink tint bg. No check icon on preset (removed — avoids confusion with set checkboxes). Tapping resets countdown.</div>
+
+  </section>
+
+  <hr>
+
+  <!-- TOKEN REFERENCE -->
+  <section id="tokens">
+    <div class="section-title">Token Reference</div>
+    <div class="section-sub">Component Tokens</div>
+    <table class="token-table">
+      <tr><th>Token</th><th>Value</th><th>Usage</th></tr>
+      <tr><td>--color-accent</td><td>var(--color-pink)</td><td>Primary alias — always use this in components</td></tr>
+      <tr><td>--btn-primary-bg</td><td>var(--color-pink)</td><td>Primary button background</td></tr>
+      <tr><td>--btn-primary-color</td><td>#5c1038</td><td>Button text on pink</td></tr>
+      <tr><td>--btn-primary-height</td><td>56px (--touch-lg)</td><td>Primary CTA touch target</td></tr>
+      <tr><td>--input-height</td><td>44px (--touch-min)</td><td>Apple HIG minimum</td></tr>
+      <tr><td>--tab-bar-height</td><td>56px</td><td>Bottom nav</td></tr>
+      <tr><td>--progress-protein</td><td>var(--ind)</td><td>Protein bar fill</td></tr>
+      <tr><td>--progress-carbs</td><td>var(--coral)</td><td>Carbs bar fill</td></tr>
+      <tr><td>--progress-fat</td><td>var(--yel)</td><td>Fat bar fill</td></tr>
+      <tr><td>--progress-calories</td><td>#ef4444</td><td>Calories bar fill</td></tr>
+    </table>
+
+    <div class="section-sub" style="margin-top:32px;">Accessibility — WCAG 2.1 AA/AAA</div>
+    <table class="token-table">
+      <tr><th>Pair</th><th>Ratio</th><th>Grade</th><th>Used for</th></tr>
+      <tr><td>Pink On (#5c1038) on Pink (#FF9BD7)</td><td>6.65:1</td><td style="color:#00a85a">AAA</td><td>Button text on pink bg</td></tr>
+      <tr><td>Pink (#FF9BD7) on dark (#0f0f0f)</td><td>10.6:1</td><td style="color:#00a85a">AAA</td><td>Pink labels, nav active on dark</td></tr>
+      <tr><td>Pink (#FF9BD7) on white (#ffffff)</td><td>1.9:1</td><td style="color:#ef4444">Fail</td><td>Never use pink as text on light surfaces</td></tr>
+      <tr><td>Pink On (#5c1038) on white (#ffffff)</td><td>12.65:1</td><td style="color:#00a85a">AAA</td><td>Use this for all pink text on light/white bg</td></tr>
+      <tr><td>Indigo Text (#566BFF) on dark (#0f0f0f)</td><td>4.51:1</td><td style="color:#00a85a">AA</td><td>Small text labels only</td></tr>
+      <tr><td>Indigo (#4D5FFF) on dark (#0f0f0f)</td><td>4.01:1</td><td style="color:#e6a817">Graphical</td><td>Bars, borders, large text ≥20px Bold</td></tr>
+      <tr><td>Text Secondary (#a3a3a3) on dark</td><td>7.60:1</td><td style="color:#00a85a">AAA</td><td>Supporting labels</td></tr>
+      <tr><td>Text Tertiary (#7b7b7b) on dark</td><td>4.53:1</td><td style="color:#00a85a">AA</td><td>Muted, disabled</td></tr>
+      <tr><td>Black (#0f0f0f) on Mint (#00E87A)</td><td>11.71:1</td><td style="color:#00a85a">AAA</td><td>Score circles, positive states</td></tr>
+      <tr><td>Coral (#FF6230) on dark (#0f0f0f)</td><td>5.38:1</td><td style="color:#00a85a">AA</td><td>Calories labels on dark bg</td></tr>
+      <tr><td>White on Coral (#FF6230)</td><td>2.98:1</td><td style="color:#ef4444">Fail</td><td>Don't use — use coral-on (#5c1900) instead</td></tr>
+    </table>
+  </section>
+
+  <div style="height:64px"></div>
+</main>
+
+<script>
+lucide.createIcons();
+
+// Last updated timestamp
+(function(){
+  const el = document.getElementById('ds-last-updated');
+  if(el){
+    const d = new Date();
+    el.textContent = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) + ' · ' + d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});
+  }
+})();
+
+const links = document.querySelectorAll('nav a');
+const sections = document.querySelectorAll('section[id]');
+const obs = new IntersectionObserver(e=>{
+  e.forEach(entry=>{
+    if(entry.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const a = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+      if(a) a.classList.add('active');
+    }
+  });
+},{threshold:.25});
+sections.forEach(s=>obs.observe(s));
+
+/* ── CONFETTI ────────────────────────────────────────────── */
+function launchConfetti(){
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+
+  const COLORS = ['#FF9BD7','#4D5FFF','#00E87A','#DADF0A','#FF6230','#ffffff'];
+  const N = 140;
+  const cx = canvas.width / 2;
+
+  const parts = Array.from({length:N},()=>({
+    x: cx + (Math.random()-0.5)*80,
+    y: canvas.height * 0.55,
+    vx: (Math.random()-0.5)*12,
+    vy: -(Math.random()*14+6),
+    w: Math.random()*8+4,
+    h: Math.random()*4+3,
+    color: COLORS[Math.floor(Math.random()*COLORS.length)],
+    angle: Math.random()*360,
+    spin: (Math.random()-0.5)*12,
+    gravity: 0.35+Math.random()*0.2,
+    drag: 0.98
+  }));
+
+  let raf, tick=0;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    tick++;
+    let live=false;
+    parts.forEach(p=>{
+      p.vy += p.gravity;
+      p.vx *= p.drag;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.angle += p.spin;
+      if(p.y < canvas.height+20) live=true;
+      const alpha = Math.max(0, 1-tick/120);
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.angle*Math.PI/180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    if(live && tick<160) raf=requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  cancelAnimationFrame(raf);
+  tick=0;
+  draw();
+}
+</script>
+</body>
+</html>

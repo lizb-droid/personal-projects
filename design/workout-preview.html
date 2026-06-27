@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workout Preview — v16</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Roboto','Helvetica Neue',sans-serif;
+  background:#e5e5ea;
+  display:flex;flex-direction:column;align-items:center;
+  padding:24px 16px;min-height:100vh
+}
+:root{
+  --bg:#fafafa;--surf:#fff;--brd:#e8e8e8;--brd-d:#d0d0d0;
+  --tp:#0f0f0f;--ts:#555;--tt:#a3a3a3;--td:#cccccc;
+  --dk0:#0f0f0f;--dk1:#141414;--dk2:#1c1c1c;
+  --coral:#FF6230;--coral-on:#5c1900;--coral-m:#ffdbce; /* Carbs */
+  --pink:#FF9BD7;--pink-on:#5c1038;--pink-m:#ffe4f3; /* PRIMARY — CTA, active states */
+  --ind:#4D5FFF;--ind-on:#1a2580;--ind-m:#eef0ff;--ind-b:#c5caff; /* Protein, done states */
+  --yel:#DADF0A;--yel-on:#4a4e00;--yel-m:#f9fac0; /* Fat */
+  --r-sm:4px;--r-md:8px;--r-lg:12px;--r-full:999px;
+}
+h1{font-size:13px;font-weight:500;color:#888;letter-spacing:.5px;margin-bottom:16px}
+.screen-toggle{display:flex;gap:6px;margin-bottom:16px;width:320px}
+.s-btn{
+  flex:1;padding:9px;border-radius:10px;
+  border:1.5px solid #ddd;background:#fff;
+  font-size:12px;font-weight:500;color:#555;cursor:pointer;transition:all .15s
+}
+.s-btn:hover{border-color:#ccc;background:#f8f8f8}
+.s-btn.on{background:var(--pink);border-color:var(--pink);color:var(--pink-on)}
+.phone{
+  width:320px;height:648px;background:var(--bg);border-radius:44px;overflow:hidden;
+  border:8px solid #1a1a1a;position:relative;display:flex;flex-direction:column;
+  box-shadow:0 24px 60px rgba(0,0,0,.25),0 0 0 1px rgba(255,255,255,.05) inset
+}
+.notch{width:120px;height:28px;background:#1a1a1a;border-radius:0 0 18px 18px;margin:0 auto;position:relative;z-index:5;flex-shrink:0}
+.scr{display:flex;flex-direction:column;width:100%;flex:1;min-height:0;}
+body.screen-mode .phone{height:100vh;}
+.scr.off{display:none}
+.status{height:36px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:var(--dk0);flex-shrink:0}
+.tabnav{height:72px;background:var(--dk0);display:flex;padding-bottom:16px;flex-shrink:0;border-top:1px solid #1f1f1f}
+.nt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding-top:8px}
+.nt svg{width:22px;height:22px;stroke:currentColor;color:#555;stroke-width:1.75}.nt.on svg{color:var(--pink)}
+.nl{font-size:10px;color:#555;letter-spacing:.3px}.nt.on .nl{color:var(--pink);font-weight:500}
+.nav-btn{padding:8px 14px;border-radius:var(--r-full);background:var(--pink);color:var(--pink-on);font-size:13px;font-weight:500;display:flex;align-items:center;gap:4px;white-space:nowrap}
+.pr-tag{display:inline-flex;align-items:center;gap:3px;border-radius:var(--r-full);padding:2px 6px;background:var(--ind-m);color:var(--ind-on);border:1px solid rgba(77,95,255,.25);font-size:9px;font-weight:500;margin-left:5px}
+.week-tabs{display:flex;padding:0 18px;background:var(--dk2);flex-shrink:0;border-bottom:1px solid #2a2a2a;overflow-x:auto}
+.wt{padding:11px 12px 9px;font-size:12px;font-weight:500;color:#555;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:color .1s}
+.wt.on{color:#fff;border-bottom:2px solid var(--pink)}
+.tl-bar{height:6px;background:#333;border-radius:var(--r-full);overflow:hidden}
+.tl-fill{height:100%;width:34%;background:var(--pink);border-radius:var(--r-full)}
+.cb{width:24px;height:24px;border-radius:var(--r-sm);border:1.5px solid var(--brd-d);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cb.done{background:var(--ind);border-color:var(--ind)}
+.cb-set{width:22px;height:22px;border-radius:var(--r-sm);border:1.5px solid var(--brd-d);flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.cb-set.done{background:var(--ind);border-color:var(--ind)}
+/* Unified secondary button — outlined pill */
+.sec-btn{
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--r-full);
+  border:1px solid rgba(0,0,0,.12);
+  padding:0 16px;
+  background:rgba(0,0,0,.04);
+  font-size:13px;font-weight:500;color:var(--ts);
+  cursor:pointer;white-space:nowrap;
+  font-family:'Roboto','Helvetica Neue',sans-serif
+}
+.sec-btn.active{border-color:var(--pink);background:rgba(255,155,215,.15);color:var(--pink-on)}
+.note{font-size:12px;color:#888;text-align:center;margin-top:12px;line-height:1.6}
+/* Embed mode — hide page chrome, show only the phone */
+.embed h1,.embed .screen-toggle{display:none}
+/* Screen mode — strip phone chrome, show raw app UI at full width */
+body.screen-mode{padding:0;background:var(--bg);display:block;}
+body.screen-mode h1,body.screen-mode .screen-toggle{display:none}
+body.screen-mode .phone{width:100%;border-radius:0;border:none;box-shadow:none;}
+body.screen-mode .notch{display:none}
+</style>
+</head>
+<body>
+
+<h1>Liz Performance App · Workout v16</h1>
+
+<div class="screen-toggle">
+  <button class="s-btn on" id="btnA" onclick="sw('A')">List</button>
+  <button class="s-btn" id="btnB" onclick="sw('B')">Detail</button>
+  <button class="s-btn" id="btnC" onclick="sw('C')">Timer</button>
+  <button class="s-btn" id="btnD" onclick="sw('D')">Macros</button>
+  <button class="s-btn" id="btnE" onclick="sw('E')">Progress</button>
+</div>
+
+<div class="phone">
+<div class="notch"></div>
+
+<!-- LIST -->
+<div class="scr" id="scrA">
+  <div class="status"><span style="font-size:13px;font-weight:500;color:#fff">9:41</span><span style="font-size:12px;color:#444">▪ ▪ ▪</span></div>
+  <div style="padding:12px 20px;background:var(--dk1);border-bottom:1px solid #222">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+      <div>
+        <div style="font-size:11px;color:#555">Tuesday · June 16</div>
+        <div style="font-size:22px;font-weight:500;color:#fff;margin-top:2px">Workout</div>
+      </div>
+      <div style="display:flex;gap:6px;padding-top:6px">
+        <div class="nav-btn" style="font-size:11px;padding:6px 10px;gap:3px">
+          <i data-lucide="download" style="width:11px;height:11px;stroke-width:2.5"></i>Export
+        </div>
+        <div class="nav-btn" style="font-size:11px;padding:6px 10px;gap:3px">
+          <i data-lucide="upload" style="width:11px;height:11px;stroke-width:2.5"></i>Import
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding:8px 20px;background:var(--dk2)">
+    <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+      <span style="font-size:11px;color:#555">Phase 2 · Week 6 of 17</span>
+      <span style="font-size:11px;color:#555">34%</span>
+    </div>
+    <div class="tl-bar"><div class="tl-fill"></div></div>
+  </div>
+  <div class="week-tabs">
+    <div class="wt">W3</div><div class="wt">W4</div><div class="wt">W5</div>
+    <div class="wt on">W6</div><div class="wt">W7</div><div class="wt">W8</div>
+  </div>
+  <div style="flex:1;background:var(--bg);overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;padding:10px 16px;display:flex;flex-direction:column;gap:8px">
+
+    <!-- MON — Done, collapsible -->
+    <div style="background:var(--surf);border:1px solid #c5caff;border-radius:var(--r-md)">
+      <div onclick="toggleDay('mon')" style="padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div style="width:20px;height:20px;border-radius:4px;background:var(--ind);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:10px;height:10px;color:#fff;stroke-width:3"></i></div>
+        <div style="width:28px;flex-shrink:0;text-align:center">
+          <div style="font-size:9px;font-weight:600;color:var(--ind-on)">Mon</div>
+          <div style="font-size:11px;color:#a0aaff;margin-top:1px">15</div>
+        </div>
+        <div style="flex:1;font-size:14px;font-weight:500;color:var(--tt)">Lower A</div>
+        <i id="mon-ch" data-lucide="chevron-down" style="width:14px;height:14px;color:var(--td);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="mon-ex" style="display:none;border-top:1px solid var(--brd)">
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Back Squat</span><div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--tt)">4 × 6</span><div style="width:15px;height:15px;border-radius:3px;background:var(--ind);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:8px;height:8px;color:#fff;stroke-width:3"></i></div></div></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">RDL</span><div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--tt)">3 × 10</span><div style="width:15px;height:15px;border-radius:3px;background:var(--ind);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:8px;height:8px;color:#fff;stroke-width:3"></i></div></div></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Leg Press</span><div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--tt)">3 × 12</span><div style="width:15px;height:15px;border-radius:3px;background:var(--ind);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:8px;height:8px;color:#fff;stroke-width:3"></i></div></div></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Hip Thrust</span><div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--tt)">4 × 10</span><div style="width:15px;height:15px;border-radius:3px;background:var(--ind);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:8px;height:8px;color:#fff;stroke-width:3"></i></div></div></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Leg Curl</span><div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--tt)">3 × 12</span><div style="width:15px;height:15px;border-radius:3px;background:var(--ind);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:8px;height:8px;color:#fff;stroke-width:3"></i></div></div></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--ts)">Calf Raise</span><div style="display:flex;align-items:center;gap:5px"><span style="font-size:11px;color:var(--tt)">4 × 15</span><div style="width:15px;height:15px;border-radius:3px;background:var(--ind);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i data-lucide="check" style="width:8px;height:8px;color:#fff;stroke-width:3"></i></div></div></div>
+      </div>
+    </div>
+
+    <!-- TUE — Today, expanded -->
+    <div style="background:var(--surf);border:1px solid var(--pink);border-radius:var(--r-md)">
+      <div onclick="toggleDay('tue')" style="padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div style="width:20px;height:20px;border-radius:4px;border:1px solid var(--brd-d);flex-shrink:0"></div>
+        <div style="width:28px;flex-shrink:0;text-align:center">
+          <div style="font-size:9px;font-weight:600;color:var(--pink-on)">Tue</div>
+          <div style="font-size:11px;font-weight:600;color:var(--pink);margin-top:1px">16</div>
+        </div>
+        <div style="flex:1;display:flex;align-items:center;gap:6px">
+          <span style="font-size:14px;font-weight:600;color:var(--tp)">Lower B</span>
+          <span style="display:inline-flex;background:var(--pink);color:var(--pink-on);font-size:9px;font-weight:600;padding:2px 7px;border-radius:var(--r-full)">Today</span>
+        </div>
+        <i id="tue-ch" data-lucide="chevron-up" style="width:14px;height:14px;color:var(--pink);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="tue-ex" style="border-top:1px solid var(--brd)">
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Back Squat</span><span style="font-size:11px;color:var(--tt)">4 × 6</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">RDL</span><span style="font-size:11px;color:var(--tt)">3 × 10</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Leg Press</span><span style="font-size:11px;color:var(--tt)">3 × 12</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Hip Thrust</span><span style="font-size:11px;color:var(--tt)">4 × 10</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Leg Curl</span><span style="font-size:11px;color:var(--tt)">3 × 12</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Calf Raise</span><span style="font-size:11px;color:var(--tt)">4 × 15</span></div>
+        <div style="padding:10px 14px 12px"><div onclick="sw('B')" style="height:40px;border-radius:var(--r-full);background:var(--pink);color:var(--pink-on);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer">Start workout</div></div>
+      </div>
+    </div>
+
+    <!-- WED — Rest -->
+    <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:12px 14px;display:flex;align-items:center;gap:10px">
+      <div style="width:20px;height:20px;border-radius:4px;border:1px solid var(--brd-d);flex-shrink:0"></div>
+      <div style="width:28px;flex-shrink:0;text-align:center">
+        <div style="font-size:9px;font-weight:600;color:var(--td)">Wed</div>
+        <div style="font-size:11px;color:var(--td);margin-top:1px">17</div>
+      </div>
+      <div style="flex:1;font-size:14px;color:var(--td)">Rest</div>
+    </div>
+
+    <!-- THU — Upcoming, collapsible -->
+    <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md)">
+      <div onclick="toggleDay('thu')" style="padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div style="width:20px;height:20px;border-radius:4px;border:1px solid var(--brd-d);flex-shrink:0"></div>
+        <div style="width:28px;flex-shrink:0;text-align:center">
+          <div style="font-size:9px;font-weight:600;color:var(--tt)">Thu</div>
+          <div style="font-size:11px;color:var(--tt);margin-top:1px">18</div>
+        </div>
+        <div style="flex:1;font-size:14px;font-weight:500;color:var(--ts)">Upper A</div>
+        <i id="thu-ch" data-lucide="chevron-down" style="width:14px;height:14px;color:var(--td);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="thu-ex" style="display:none;border-top:1px solid var(--brd)">
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Bench Press</span><span style="font-size:11px;color:var(--tt)">3 × 8</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">OHP</span><span style="font-size:11px;color:var(--tt)">3 × 8</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Pull-up</span><span style="font-size:11px;color:var(--tt)">3 × 6</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Bent Row</span><span style="font-size:11px;color:var(--tt)">3 × 10</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--ts)">Tricep Ext</span><span style="font-size:11px;color:var(--tt)">3 × 12</span></div>
+      </div>
+    </div>
+
+    <!-- FRI — Upcoming, collapsible -->
+    <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md)">
+      <div onclick="toggleDay('fri')" style="padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div style="width:20px;height:20px;border-radius:4px;border:1px solid var(--brd-d);flex-shrink:0"></div>
+        <div style="width:28px;flex-shrink:0;text-align:center">
+          <div style="font-size:9px;font-weight:600;color:var(--tt)">Fri</div>
+          <div style="font-size:11px;color:var(--tt);margin-top:1px">19</div>
+        </div>
+        <div style="flex:1;font-size:14px;font-weight:500;color:var(--ts)">Upper B</div>
+        <i id="fri-ch" data-lucide="chevron-down" style="width:14px;height:14px;color:var(--td);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="fri-ex" style="display:none;border-top:1px solid var(--brd)">
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Incline Press</span><span style="font-size:11px;color:var(--tt)">3 × 8</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">Pull-up</span><span style="font-size:11px;color:var(--tt)">3 × 6</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">DB Row</span><span style="font-size:11px;color:var(--tt)">3 × 10</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--brd)"><span style="font-size:12px;color:var(--ts)">OHP</span><span style="font-size:11px;color:var(--tt)">3 × 8</span></div>
+        <div style="padding:8px 14px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:12px;color:var(--ts)">Bicep Curl</span><span style="font-size:11px;color:var(--tt)">3 × 12</span></div>
+      </div>
+    </div>
+
+    <!-- SAT — Easy Cardio -->
+    <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:12px 14px;display:flex;align-items:center;gap:10px">
+      <div style="width:20px;height:20px;border-radius:4px;border:1px solid var(--brd-d);flex-shrink:0"></div>
+      <div style="width:28px;flex-shrink:0;text-align:center">
+        <div style="font-size:9px;font-weight:600;color:var(--td)">Sat</div>
+        <div style="font-size:11px;color:var(--td);margin-top:1px">20</div>
+      </div>
+      <div style="flex:1;font-size:14px;color:var(--tt)">Easy Cardio</div>
+    </div>
+
+    <!-- SUN — Rest -->
+    <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:12px 14px;display:flex;align-items:center;gap:10px">
+      <div style="width:20px;height:20px;border-radius:4px;border:1px solid var(--brd-d);flex-shrink:0"></div>
+      <div style="width:28px;flex-shrink:0;text-align:center">
+        <div style="font-size:9px;font-weight:600;color:var(--td)">Sun</div>
+        <div style="font-size:11px;color:var(--td);margin-top:1px">21</div>
+      </div>
+      <div style="flex:1;font-size:14px;color:var(--td)">Rest</div>
+    </div>
+
+  </div>
+  <div class="tabnav">
+    <div class="nt on"><i data-lucide="dumbbell"></i><span class="nl">Workout</span></div>
+    <div class="nt"><i data-lucide="utensils"></i><span class="nl">Macros</span></div>
+    <div class="nt"><i data-lucide="trending-up"></i><span class="nl">Progress</span></div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="scr off" id="scrB">
+  <div class="status"><span style="font-size:13px;font-weight:500;color:#fff">9:41</span><span style="font-size:12px;color:#444">▪ ▪ ▪</span></div>
+  <div style="background:var(--dk1);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #222;flex-shrink:0">
+    <div class="nav-btn"><i data-lucide="arrow-left" style="width:14px;height:14px;stroke-width:2.5"></i> All</div>
+    <div style="text-align:center;flex:1">
+      <div style="font-size:11px;color:#555">Tue · June 16</div>
+      <div style="font-size:17px;font-weight:500;color:#fff;margin-top:2px">Lower B</div>
+    </div>
+    <div class="nav-btn">Next <i data-lucide="arrow-right" style="width:14px;height:14px;stroke-width:2.5"></i></div>
+  </div>
+  <!-- Single scroll container — everything light scrolls together -->
+  <div style="flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;background:var(--bg)">
+    <div style="padding:14px 16px 12px;border-bottom:1px solid var(--brd)">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
+        <span style="font-size:15px;font-weight:500;color:var(--tp)">Back Squat</span>
+        <span class="pr-tag">PR</span>
+      </div>
+      <div style="font-size:11px;color:var(--tt);margin-bottom:8px">4 × 6 · 65% 1RM</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:10px">
+        <span style="font-size:10px;font-weight:500;color:var(--tt)">Target</span>
+        <span style="font-size:16px;font-weight:600;color:var(--ind);line-height:1">215 lbs</span>
+        <span style="font-size:10px;color:var(--td)">65% × PR 330</span>
+      </div>
+      <div style="background:#f4f4f4;border-radius:var(--r-md);padding:8px 10px;font-size:11px;color:var(--ts)">Push weight this week — deload follows next cycle</div>
+    </div>
+    <!-- Set table -->
+    <div style="padding:10px 20px 4px">
+      <!-- Column headers -->
+      <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 24px;gap:0 8px;padding-bottom:7px;border-bottom:1px solid var(--brd);margin-bottom:2px">
+        <span style="font-size:9px;font-weight:600;color:var(--td)">Set</span>
+        <span style="font-size:9px;font-weight:600;color:var(--td)">Previous</span>
+        <span style="font-size:9px;font-weight:600;color:var(--td);text-align:center">Weight</span>
+        <span style="font-size:9px;font-weight:600;color:var(--td);text-align:center">Reps</span>
+        <span></span>
+      </div>
+      <!-- S1 done -->
+      <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 24px;gap:0 8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--brd)">
+        <span style="font-size:13px;font-weight:600;color:var(--tp)">1</span>
+        <span style="font-size:11px;color:var(--td)">205 × 6</span>
+        <div style="height:34px;border-radius:var(--r-sm);background:var(--ind-m);border:1px solid #c5caff;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;font-weight:600;color:var(--ind-on)">215</span>
+        </div>
+        <div style="height:34px;border-radius:var(--r-sm);background:var(--ind-m);border:1px solid #c5caff;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;font-weight:600;color:var(--ind-on)">6</span>
+        </div>
+        <div class="cb-set done"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div>
+      </div>
+      <!-- S2 done — PR -->
+      <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 24px;gap:0 8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--brd)">
+        <span style="font-size:13px;font-weight:600;color:var(--tp)">2</span>
+        <span style="font-size:11px;color:var(--td)">210 × 6</span>
+        <div style="height:34px;border-radius:var(--r-sm);background:var(--ind-m);border:1px solid #c5caff;display:flex;align-items:center;justify-content:center;position:relative">
+          <span style="font-size:13px;font-weight:600;color:var(--ind-on)">215</span>
+          <span class="pr-tag" style="position:absolute;top:-7px;right:-4px">PR</span>
+        </div>
+        <div style="height:34px;border-radius:var(--r-sm);background:var(--ind-m);border:1px solid #c5caff;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;font-weight:600;color:var(--ind-on)">6</span>
+        </div>
+        <div class="cb-set done"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div>
+      </div>
+      <!-- S3 active -->
+      <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 24px;gap:0 8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--brd)">
+        <span style="font-size:13px;font-weight:600;color:var(--tp)">3</span>
+        <span style="font-size:11px;color:var(--td)">205 × 6</span>
+        <div style="height:34px;border-radius:var(--r-sm);background:#fff;border:2px solid var(--pink);display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;color:var(--td)">—</span>
+        </div>
+        <div style="height:34px;border-radius:var(--r-sm);background:#fff;border:2px solid var(--pink);display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;color:var(--td)">—</span>
+        </div>
+        <div class="cb-set"></div>
+      </div>
+      <!-- S4 pending -->
+      <div style="display:grid;grid-template-columns:18px 1fr 54px 46px 24px;gap:0 8px;align-items:center;padding:8px 0">
+        <span style="font-size:13px;font-weight:500;color:var(--td)">4</span>
+        <span style="font-size:11px;color:var(--td)">205 × 6</span>
+        <div style="height:34px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;color:var(--td)">—</span>
+        </div>
+        <div style="height:34px;border-radius:var(--r-sm);background:var(--bg);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center">
+          <span style="font-size:13px;color:var(--td)">—</span>
+        </div>
+        <div class="cb-set"></div>
+      </div>
+    </div>
+    <!-- Add set -->
+    <div style="padding:4px 20px 10px">
+      <div style="height:44px;border-radius:var(--r-full);border:1.5px dashed var(--pink);display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer">
+        <i data-lucide="plus" style="width:14px;height:14px;color:var(--pink);stroke-width:2.5"></i>
+        <span style="font-size:13px;font-weight:500;color:var(--pink)">Add set</span>
+      </div>
+    </div>
+    <!-- Notes — contained -->
+    <div style="margin:0 16px 4px">
+      <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:12px">
+        <div style="font-size:11px;font-weight:500;color:var(--tt);margin-bottom:5px">Notes</div>
+        <div style="font-size:13px;color:var(--td)">How did this feel?</div>
+      </div>
+    </div>
+    <div style="margin:10px 20px 16px;height:48px;border-radius:var(--r-full);background:var(--pink);color:var(--pink-on);font-size:15px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer">Mark complete</div>
+  </div>
+  <div class="tabnav">
+    <div class="nt on"><i data-lucide="dumbbell"></i><span class="nl">Workout</span></div>
+    <div class="nt"><i data-lucide="utensils"></i><span class="nl">Macros</span></div>
+    <div class="nt"><i data-lucide="trending-up"></i><span class="nl">Progress</span></div>
+  </div>
+  <div style="position:absolute;bottom:80px;right:16px;width:54px;height:54px;border-radius:50%;background:var(--dk1);border:1px solid #2e2e2e;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.4);z-index:5;cursor:pointer">
+    <div style="font-size:14px;font-weight:500;color:#fff;letter-spacing:-0.5px;line-height:1">2:00</div>
+    <div style="font-size:8px;color:#555;margin-top:1px">rest</div>
+  </div>
+</div>
+
+<!-- TIMER -->
+<div class="scr off" id="scrC" style="position:relative;min-height:620px">
+  <div style="display:flex;flex-direction:column">
+    <div class="status"><span style="font-size:13px;font-weight:500;color:#fff">9:41</span></div>
+    <div style="padding:14px 20px;background:var(--dk1);border-bottom:1px solid #222;text-align:center">
+      <div style="font-size:11px;color:#555">Tue · June 16</div>
+      <div style="font-size:17px;font-weight:500;color:#fff;margin-top:2px">Lower B</div>
+    </div>
+    <div style="background:var(--bg)">
+      <div style="padding:14px 20px 10px">
+        <div style="font-size:15px;font-weight:500;color:var(--tp);display:flex;align-items:center">Back Squat<span class="pr-tag" style="margin-left:6px">PR</span></div>
+        <div style="font-size:12px;color:var(--tt);margin-top:3px">4×6 · 65%</div>
+      </div>
+      <!-- Done set pills — cards -->
+      <div style="padding:0 20px 14px;display:flex;flex-direction:column;gap:6px">
+        <div style="background:var(--ind-m);border:1px solid #c5caff;border-radius:var(--r-md);padding:10px 14px;display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;font-weight:500;color:var(--ind-on)">S1</span>
+          <span style="font-size:12px;color:var(--ind-on);opacity:.7">· 215 lbs</span>
+          <div class="cb-set done" style="margin-left:auto;flex-shrink:0"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div>
+        </div>
+        <div style="background:var(--ind-m);border:1px solid #c5caff;border-radius:var(--r-md);padding:10px 14px;display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;font-weight:500;color:var(--ind-on)">S2</span>
+          <span style="font-size:12px;color:var(--ind-on);opacity:.7">· 215 lbs</span>
+          <div class="cb-set done" style="margin-left:auto;flex-shrink:0"><i data-lucide="check" style="width:11px;height:11px;color:#fff;stroke-width:3"></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Glass modal — light frosted glass over app content -->
+  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;padding:0 16px;background:rgba(0,0,0,.2);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)">
+    <div style="width:100%;background:rgba(255,255,255,0.82);backdrop-filter:blur(28px) saturate(1.4);-webkit-backdrop-filter:blur(28px) saturate(1.4);border:1px solid rgba(255,255,255,0.6);border-radius:24px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,.12)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:4px">
+        <div>
+          <div style="font-size:16px;font-weight:500;color:var(--tp)">Rest timer</div>
+          <div style="font-size:11px;color:var(--tt);margin-top:2px">Recommended · Back Squat</div>
+        </div>
+        <div style="width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;cursor:pointer">
+          <i data-lucide="x" style="width:15px;height:15px;color:var(--ts);stroke-width:2.5"></i>
+        </div>
+      </div>
+      <div style="font-size:56px;font-weight:300;color:var(--tp);text-align:center;letter-spacing:-3px;margin:16px 0 14px">2:00</div>
+      <!-- ± 10s -->
+      <div style="display:flex;justify-content:center;gap:10px;margin-bottom:10px">
+        <div class="sec-btn" style="padding:8px 22px;background:rgba(0,0,0,.04);border-color:var(--brd);color:var(--ts)">− 10s</div>
+        <div class="sec-btn" style="padding:8px 22px;background:rgba(0,0,0,.04);border-color:var(--brd);color:var(--ts)">+ 10s</div>
+      </div>
+      <!-- Presets -->
+      <div style="display:flex;gap:6px;margin-bottom:16px">
+        <div class="sec-btn" style="flex:1;height:36px;padding:0;font-size:12px;background:rgba(0,0,0,.04);border-color:var(--brd);color:var(--tt)">1 min</div>
+        <div class="sec-btn" style="flex:1;height:36px;padding:0;font-size:12px;background:rgba(0,0,0,.04);border-color:var(--brd);color:var(--tt)">2 min</div>
+        <div class="sec-btn active" style="flex:1;height:36px;padding:0;font-size:12px;">3 min</div>
+        <div class="sec-btn" style="flex:1;height:36px;padding:0;font-size:12px;background:rgba(0,0,0,.04);border-color:var(--brd);color:var(--tt)">4 min</div>
+      </div>
+      <!-- Start + Reset -->
+      <div style="display:flex;gap:8px">
+        <div style="flex:1;height:48px;border-radius:var(--r-full);background:var(--pink);color:var(--pink-on);font-size:15px;font-weight:500;display:flex;align-items:center;justify-content:center;cursor:pointer">Start</div>
+        <div class="sec-btn" style="height:48px;padding:0 20px;font-size:13px">Reset</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- MACROS — Visual bars + expandable meal blocks + day type -->
+<div class="scr off" id="scrD">
+  <div class="status"><span style="font-size:13px;font-weight:500;color:#fff">9:41</span><span style="font-size:12px;color:#444">▪ ▪ ▪</span></div>
+  <!-- Header + day type badge -->
+  <div style="padding:11px 20px 10px;background:var(--dk1);border-bottom:1px solid #222;flex-shrink:0">
+    <div style="font-size:11px;color:#555">Tuesday · June 16</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+      <div style="font-size:20px;font-weight:500;color:#fff">Macros</div>
+      <div style="display:inline-flex;align-items:center;background:rgba(255,155,215,.18);color:#FF9BD7;border:1px solid rgba(255,155,215,.4);font-size:9px;font-weight:500;padding:2px 6px;border-radius:var(--r-full)">Training Day</div>
+    </div>
+  </div>
+  <!-- Macro bars — sticky, dark -->
+  <div style="padding:10px 20px;background:var(--dk2);flex-shrink:0;border-bottom:1px solid #2a2a2a;display:flex;flex-direction:column;gap:7px">
+    <!-- Protein: on track -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:500;color:#fff">Protein</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:#a0aaff">142 / 160g</span>
+          <span style="font-size:10px;font-weight:500;color:#a3a3a3;background:#222;border-radius:4px;padding:1px 6px">18g left</span>
+        </div>
+      </div>
+      <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:89%;background:var(--ind);border-radius:999px"></div></div>
+    </div>
+    <!-- Carbs: over -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:500;color:#fff">Carbs</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:#ff8a6e">240 / 200g</span>
+          <span style="font-size:10px;font-weight:500;color:#ef4444;background:rgba(239,68,68,.15);border-radius:4px;padding:1px 6px">40g over</span>
+        </div>
+      </div>
+      <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:100%;background:var(--coral);border-radius:999px"></div></div>
+    </div>
+    <!-- Fat: on track -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:500;color:#fff">Fat</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:#d4d800">40 / 65g</span>
+          <span style="font-size:10px;font-weight:500;color:#a3a3a3;background:#222;border-radius:4px;padding:1px 6px">25g left</span>
+        </div>
+      </div>
+      <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:62%;background:var(--yel);border-radius:999px"></div></div>
+    </div>
+    <!-- Calories: over -->
+    <div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:500;color:#fff">Calories</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:11px;color:#f87171">2,480 / 2,400</span>
+          <span style="font-size:10px;font-weight:500;color:#ef4444;background:rgba(239,68,68,.15);border-radius:4px;padding:1px 6px">80 over</span>
+        </div>
+      </div>
+      <div style="height:5px;background:#2a2a2a;border-radius:999px;overflow:hidden"><div style="height:100%;width:100%;background:#ef4444;border-radius:999px"></div></div>
+    </div>
+  </div>
+  <!-- Expandable meal blocks — all collapsed by default, scrolls when full -->
+  <div style="flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;background:var(--bg);padding:10px 16px;display:flex;flex-direction:column;gap:6px">
+    <!-- Pre-workout -->
+    <div style="background:var(--surf);border-radius:var(--r-md);border:1px solid var(--brd)">
+      <div onclick="toggleMeal('pw')" style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--tp)">Pre-workout</div>
+          <div style="font-size:11px;color:var(--tt);margin-top:1px">P 40 · C 30 · F 5 · 330 kcal</div>
+        </div>
+        <i id="pw-icon" data-lucide="chevron-up" style="width:16px;height:16px;color:var(--tt);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="pw-body" style="display:flex;flex-direction:column;border-top:1px solid var(--brd)">
+        <div style="padding:7px 16px 4px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Protein shake (1 scoop)</span>
+          <span style="font-size:11px;color:var(--tt)">P 25 · C 5 · F 2 · 138</span>
+        </div>
+        <div style="padding:4px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Banana</span>
+          <span style="font-size:11px;color:var(--tt)">P 1 · C 25 · F 0 · 105</span>
+        </div>
+        <div style="padding:4px 16px 9px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Greek yogurt (½ cup)</span>
+          <span style="font-size:11px;color:var(--tt)">P 14 · C 0 · F 3 · 87</span>
+        </div>
+      </div>
+    </div>
+    <!-- Breakfast -->
+    <div style="background:var(--surf);border-radius:var(--r-md);border:1px solid var(--brd)">
+      <div onclick="toggleMeal('bf')" style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--tp)">Breakfast</div>
+          <div style="font-size:11px;color:var(--tt);margin-top:1px">P 52 · C 45 · F 18 · 554 kcal</div>
+        </div>
+        <i id="bf-icon" data-lucide="chevron-down" style="width:16px;height:16px;color:var(--tt);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="bf-body" style="display:none;flex-direction:column;border-top:1px solid var(--brd)">
+        <div style="padding:7px 16px 4px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Eggs (3 whole)</span>
+          <span style="font-size:11px;color:var(--tt)">P 18 · C 2 · F 15 · 215</span>
+        </div>
+        <div style="padding:4px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Oats (½ cup dry)</span>
+          <span style="font-size:11px;color:var(--tt)">P 5 · C 27 · F 3 · 150</span>
+        </div>
+        <div style="padding:4px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Greek yogurt (1 cup)</span>
+          <span style="font-size:11px;color:var(--tt)">P 17 · C 9 · F 0 · 100</span>
+        </div>
+        <div style="padding:4px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Blueberries (½ cup)</span>
+          <span style="font-size:11px;color:var(--tt)">P 1 · C 11 · F 0 · 42</span>
+        </div>
+        <div style="padding:4px 16px 9px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Almond butter (1 tbsp)</span>
+          <span style="font-size:11px;color:var(--tt)">P 2 · C 3 · F 9 · 98</span>
+        </div>
+      </div>
+    </div>
+    <!-- Lunch -->
+    <div style="background:var(--surf);border-radius:var(--r-md);border:1px solid var(--brd)">
+      <div onclick="toggleMeal('ln')" style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--tp)">Lunch</div>
+          <div style="font-size:11px;color:var(--tt);margin-top:1px">P 50 · C 120 · F 17 · 833 kcal</div>
+        </div>
+        <i id="ln-icon" data-lucide="chevron-down" style="width:16px;height:16px;color:var(--tt);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="ln-body" style="display:none;flex-direction:column;border-top:1px solid var(--brd)">
+        <div style="padding:7px 16px 4px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Chicken breast (6oz)</span>
+          <span style="font-size:11px;color:var(--tt)">P 42 · C 0 · F 4 · 204</span>
+        </div>
+        <div style="padding:4px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">White rice (1.5 cups)</span>
+          <span style="font-size:11px;color:var(--tt)">P 5 · C 90 · F 0 · 380</span>
+        </div>
+        <div style="padding:4px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Mixed salad + dressing</span>
+          <span style="font-size:11px;color:var(--tt)">P 2 · C 8 · F 12 · 148</span>
+        </div>
+        <div style="padding:4px 16px 9px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Olive oil (1 tbsp)</span>
+          <span style="font-size:11px;color:var(--tt)">P 0 · C 0 · F 14 · 119</span>
+        </div>
+      </div>
+    </div>
+    <!-- Snacks -->
+    <div style="background:var(--surf);border-radius:var(--r-md);border:1px solid var(--brd)">
+      <div onclick="toggleMeal('sk')" style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--tp)">Snacks</div>
+          <div style="font-size:11px;color:var(--tt);margin-top:1px">P 0 · C 25 · F 0 · 100 kcal</div>
+        </div>
+        <i id="sk-icon" data-lucide="chevron-down" style="width:16px;height:16px;color:var(--tt);stroke-width:2;flex-shrink:0"></i>
+      </div>
+      <div id="sk-body" style="display:none;flex-direction:column;border-top:1px solid var(--brd)">
+        <div style="padding:7px 16px 9px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:var(--ts)">Apple</span>
+          <span style="font-size:11px;color:var(--tt)">P 0 · C 25 · F 0 · 100</span>
+        </div>
+      </div>
+    </div>
+    <!-- Dinner: not logged — dashed card -->
+    <div style="background:var(--surf);border-radius:var(--r-md);border:1px dashed var(--brd);padding:11px 14px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;font-weight:500;color:var(--tt)">Dinner</span>
+      <span style="font-size:11px;color:var(--td)">Not logged</span>
+    </div>
+    <!-- Late Snack: not logged — dashed card -->
+    <div style="background:var(--surf);border-radius:var(--r-md);border:1px dashed var(--brd);padding:11px 14px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;font-weight:500;color:var(--tt)">Late Snack</span>
+      <span style="font-size:11px;color:var(--td)">Not logged</span>
+    </div>
+  </div>
+  <div class="tabnav">
+    <div class="nt"><i data-lucide="dumbbell"></i><span class="nl">Workout</span></div>
+    <div class="nt on"><i data-lucide="utensils"></i><span class="nl">Macros</span></div>
+    <div class="nt"><i data-lucide="trending-up"></i><span class="nl">Progress</span></div>
+  </div>
+</div>
+
+<!-- PROGRESS — PR table + weight graph -->
+<div class="scr off" id="scrE">
+  <div class="status"><span style="font-size:13px;font-weight:500;color:#fff">9:41</span><span style="font-size:12px;color:#444">▪ ▪ ▪</span></div>
+  <!-- Header -->
+  <div style="padding:11px 20px 10px;background:var(--dk1);border-bottom:1px solid #222;flex-shrink:0">
+    <div style="font-size:11px;color:#555">Friday · June 19</div>
+    <div style="font-size:20px;font-weight:500;color:#fff;margin-top:2px">Progress</div>
+  </div>
+  <!-- Scrollable content -->
+  <div style="flex:1;overflow-y:auto;min-height:0;-webkit-overflow-scrolling:touch;background:var(--bg)">
+
+    <!-- PR Section -->
+    <div style="padding:14px 20px 0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <i data-lucide="trophy" style="width:14px;height:14px;color:var(--ind);stroke-width:2"></i>
+          <span style="font-size:13px;font-weight:600;color:var(--tp)">Personal Records</span>
+        </div>
+        <span style="font-size:11px;color:var(--pink);font-weight:500;cursor:pointer">Edit all</span>
+      </div>
+      <!-- PR table header — card top -->
+      <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;gap:0;padding:5px 10px;background:var(--dk2);border-radius:var(--r-md) var(--r-md) 0 0;border:1px solid #e0e0e0;border-bottom:none">
+        <span style="font-size:9px;font-weight:600;color:var(--tt)">Exercise</span>
+        <span style="font-size:9px;font-weight:600;color:var(--tt);text-align:right">Best</span>
+        <span style="font-size:9px;font-weight:600;color:var(--tt);text-align:right">Date</span>
+        <span style="font-size:9px;font-weight:600;color:var(--tt);text-align:right"></span>
+      </div>
+      <!-- PR rows — card body -->
+      <div style="border:1px solid #e0e0e0;border-radius:0 0 var(--r-md) var(--r-md);overflow:hidden;background:var(--surf)">
+        <!-- Row -->
+        <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px;border-bottom:1px solid var(--brd)">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--tp)">Back Squat</div>
+            <div style="font-size:10px;color:var(--tt);margin-top:1px">4×6</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:12px;font-weight:600;color:var(--ind-on)">215</span>
+            <span style="font-size:10px;color:var(--tt)"> lbs</span>
+          </div>
+          <div style="text-align:right;font-size:10px;color:var(--tt)">Jun 16</div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--tt);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px;border-bottom:1px solid var(--brd)">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--tp)">Leg Press</div>
+            <div style="font-size:10px;color:var(--tt);margin-top:1px">3×12</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:12px;font-weight:600;color:var(--ind-on)">320</span>
+            <span style="font-size:10px;color:var(--tt)"> lbs</span>
+          </div>
+          <div style="text-align:right;font-size:10px;color:var(--tt)">Jun 14</div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--tt);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px;border-bottom:1px solid var(--brd)">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--tp)">Romanian DL</div>
+            <div style="font-size:10px;color:var(--tt);margin-top:1px">3×10</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:12px;font-weight:600;color:var(--ind-on)">185</span>
+            <span style="font-size:10px;color:var(--tt)"> lbs</span>
+          </div>
+          <div style="text-align:right;font-size:10px;color:var(--tt)">Jun 12</div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--tt);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px;border-bottom:1px solid var(--brd)">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--tp)">Hip Thrust</div>
+            <div style="font-size:10px;color:var(--tt);margin-top:1px">4×10</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:12px;font-weight:600;color:var(--ind-on)">175</span>
+            <span style="font-size:10px;color:var(--tt)"> lbs</span>
+          </div>
+          <div style="text-align:right;font-size:10px;color:var(--tt)">Jun 10</div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--tt);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px;border-bottom:1px solid var(--brd)">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--tp)">Bench Press</div>
+            <div style="font-size:10px;color:var(--tt);margin-top:1px">3×8</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:12px;font-weight:600;color:var(--ind-on)">135</span>
+            <span style="font-size:10px;color:var(--tt)"> lbs</span>
+          </div>
+          <div style="text-align:right;font-size:10px;color:var(--tt)">Jun 9</div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--tt);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 68px 56px 28px;align-items:center;padding:9px 10px">
+          <div>
+            <div style="font-size:12px;font-weight:500;color:var(--tp)">OHP</div>
+            <div style="font-size:10px;color:var(--tt);margin-top:1px">3×8</div>
+          </div>
+          <div style="text-align:right">
+            <span style="font-size:12px;font-weight:600;color:var(--ind-on)">95</span>
+            <span style="font-size:10px;color:var(--tt)"> lbs</span>
+          </div>
+          <div style="text-align:right;font-size:10px;color:var(--tt)">Jun 5</div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--tt);stroke-width:2"></i></div>
+        </div>
+      </div>
+      <!-- Add PR -->
+      <div style="height:44px;border-radius:var(--r-full);border:1.5px dashed var(--pink);display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;margin-top:10px">
+        <i data-lucide="plus" style="width:14px;height:14px;color:var(--pink);stroke-width:2.5"></i>
+        <span style="font-size:13px;font-weight:500;color:var(--pink)">Add PR</span>
+      </div>
+    </div>
+
+    <!-- Weight Log Section -->
+    <div style="padding:14px 20px 20px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <i data-lucide="trending-up" style="width:14px;height:14px;color:var(--pink);stroke-width:2"></i>
+          <span style="font-size:13px;font-weight:600;color:var(--tp)">Weight Log</span>
+        </div>
+        <span style="font-size:11px;color:var(--tt)">30 days</span>
+      </div>
+      <!-- Stats row — three cards -->
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <div style="flex:1;background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:8px 10px">
+          <div style="font-size:9px;font-weight:600;color:var(--tt);margin-bottom:2px">Current</div>
+          <div style="font-size:16px;font-weight:600;color:var(--tp)">162.4<span style="font-size:10px;font-weight:400;color:var(--tt)"> lbs</span></div>
+        </div>
+        <div style="flex:1;background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:8px 10px">
+          <div style="font-size:9px;font-weight:600;color:var(--tt);margin-bottom:2px">Start</div>
+          <div style="font-size:16px;font-weight:600;color:var(--tp)">165.8<span style="font-size:10px;font-weight:400;color:var(--tt)"> lbs</span></div>
+        </div>
+        <div style="flex:1;background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:8px 10px">
+          <div style="font-size:9px;font-weight:600;color:var(--tt);margin-bottom:2px">Change</div>
+          <div style="font-size:16px;font-weight:600;color:#22c55e">−3.4<span style="font-size:10px;font-weight:400;color:var(--tt)"> lbs</span></div>
+        </div>
+      </div>
+      <!-- SVG weight chart — card -->
+      <div style="background:var(--surf);border:1px solid var(--brd);border-radius:var(--r-md);padding:10px 12px;margin-bottom:10px">
+        <svg viewBox="0 0 256 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;overflow:visible">
+          <line x1="0" y1="10" x2="256" y2="10" stroke="#f0f0f0" stroke-width="1"/>
+          <line x1="0" y1="30" x2="256" y2="30" stroke="#f0f0f0" stroke-width="1"/>
+          <line x1="0" y1="50" x2="256" y2="50" stroke="#f0f0f0" stroke-width="1"/>
+          <line x1="0" y1="70" x2="256" y2="70" stroke="#f0f0f0" stroke-width="1"/>
+          <text x="0" y="9" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif">167</text>
+          <text x="0" y="29" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif">165</text>
+          <text x="0" y="49" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif">163</text>
+          <text x="0" y="69" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif">161</text>
+          <defs>
+            <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#FF9BD7" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#FF9BD7" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M22,18 C40,20 55,38 78,32 C100,26 115,42 138,38 C160,34 175,48 198,44 C215,41 230,50 248,46 L248,80 L22,80 Z" fill="url(#wg)"/>
+          <path d="M22,18 C40,20 55,38 78,32 C100,26 115,42 138,38 C160,34 175,48 198,44 C215,41 230,50 248,46" fill="none" stroke="#FF9BD7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="22"  cy="18" r="2.5" fill="#FF9BD7"/>
+          <circle cx="78"  cy="32" r="2.5" fill="#FF9BD7"/>
+          <circle cx="138" cy="38" r="2.5" fill="#FF9BD7"/>
+          <circle cx="198" cy="44" r="2.5" fill="#FF9BD7"/>
+          <circle cx="248" cy="46" r="3" fill="#fff" stroke="#FF9BD7" stroke-width="2"/>
+          <text x="14"  y="79" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif" text-anchor="middle">May 20</text>
+          <text x="78"  y="79" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif" text-anchor="middle">Jun 1</text>
+          <text x="138" y="79" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif" text-anchor="middle">Jun 8</text>
+          <text x="198" y="79" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif" text-anchor="middle">Jun 14</text>
+          <text x="248" y="79" font-size="7" fill="#a3a3a3" font-family="Roboto,sans-serif" text-anchor="middle">Today</text>
+        </svg>
+      </div>
+      <!-- Log entries table — card -->
+      <div style="border:1px solid #e0e0e0;border-radius:var(--r-md);overflow:hidden;background:var(--surf);margin-bottom:10px">
+        <!-- Table header -->
+        <div style="display:grid;grid-template-columns:1fr 72px 28px;padding:5px 10px;background:var(--dk2);border-bottom:1px solid var(--brd)">
+          <span style="font-size:9px;font-weight:600;color:var(--tt)">Date</span>
+          <span style="font-size:9px;font-weight:600;color:var(--tt);text-align:right">Weight</span>
+          <span></span>
+        </div>
+        <!-- Entries -->
+        <div style="display:grid;grid-template-columns:1fr 72px 28px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--brd)">
+          <span style="font-size:12px;color:var(--tp)">Today · Jun 19</span>
+          <div style="text-align:right"><span style="font-size:12px;font-weight:600;color:var(--tp)">162.4</span><span style="font-size:10px;color:var(--tt)"> lbs</span></div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--tt);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 72px 28px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--brd)">
+          <span style="font-size:12px;color:var(--ts)">Jun 14</span>
+          <div style="text-align:right"><span style="font-size:12px;font-weight:500;color:var(--ts)">163.1</span><span style="font-size:10px;color:var(--tt)"> lbs</span></div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--td);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 72px 28px;align-items:center;padding:8px 10px;border-bottom:1px solid var(--brd)">
+          <span style="font-size:12px;color:var(--ts)">Jun 8</span>
+          <div style="text-align:right"><span style="font-size:12px;font-weight:500;color:var(--ts)">164.2</span><span style="font-size:10px;color:var(--tt)"> lbs</span></div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--td);stroke-width:2"></i></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 72px 28px;align-items:center;padding:8px 10px">
+          <span style="font-size:12px;color:var(--ts)">Jun 1</span>
+          <div style="text-align:right"><span style="font-size:12px;font-weight:500;color:var(--ts)">164.9</span><span style="font-size:10px;color:var(--tt)"> lbs</span></div>
+          <div style="text-align:right;cursor:pointer"><i data-lucide="pencil" style="width:12px;height:12px;color:var(--td);stroke-width:2"></i></div>
+        </div>
+      </div>
+      <!-- Add entry CTA -->
+      <div style="height:44px;border-radius:var(--r-full);border:1.5px dashed var(--pink);display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer">
+        <i data-lucide="plus" style="width:14px;height:14px;color:var(--pink);stroke-width:2.5"></i>
+        <span style="font-size:13px;font-weight:500;color:var(--pink)">Log weight</span>
+      </div>
+    </div>
+
+  </div>
+  <!-- Tab nav -->
+  <div class="tabnav">
+    <div class="nt"><i data-lucide="dumbbell"></i><span class="nl">Workout</span></div>
+    <div class="nt"><i data-lucide="utensils"></i><span class="nl">Macros</span></div>
+    <div class="nt on"><i data-lucide="trending-up"></i><span class="nl">Progress</span></div>
+  </div>
+</div>
+
+</div>
+
+<p class="note">Toggle screens above · Glass effect renders fully in browser<br>Nav: Workout · Macros · Progress · Pink = CTA · Indigo = protein/done · Coral = carbs · Yellow = fat · Red = calories</p>
+
+<script>
+lucide.createIcons();
+function sw(s){
+  ['A','B','C','D','E'].forEach(x=>{
+    document.getElementById('scr'+x).className='scr'+(x===s?'':' off');
+    document.getElementById('btn'+x).className='s-btn'+(x===s?' on':'');
+  });
+  lucide.createIcons();
+}
+function toggleDay(id){
+  var body=document.getElementById(id+'-ex');
+  var icon=document.getElementById(id+'-ch');
+  if(!body)return;
+  var open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  icon.setAttribute('data-lucide',open?'chevron-down':'chevron-up');
+  lucide.createIcons();
+}
+function toggleMeal(id){
+  var body=document.getElementById(id+'-body');
+  var icon=document.getElementById(id+'-icon');
+  var open=body.style.display==='flex';
+  body.style.display=open?'none':'flex';
+  body.style.flexDirection='column';
+  icon.setAttribute('data-lucide',open?'chevron-down':'chevron-up');
+  icon.style.color=open?'var(--tt)':'var(--pink)';
+  lucide.createIcons();
+}
+// Hash-based view init for iframe embedding: #detail → Detail, #timer → Timer
+(function(){
+  var map={detail:'B',timer:'C'};
+  var hash=(location.hash||'').replace('#','').toLowerCase();
+  if(map[hash]) sw(map[hash]);
+  // Embed mode: hide page chrome when ?embed in URL
+  if(location.search.includes('embed')){
+    document.body.classList.add('embed');
+  }
+  // Screen mode: strip phone chrome, show raw app UI
+  if(location.search.includes('screen')){
+    document.body.classList.add('screen-mode');
+  }
+})();
+</script>
+</body>
+</html>

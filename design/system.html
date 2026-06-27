@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design System — Liz Performance App</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Space+Mono:wght@400;700&family=Barlow:wght@400;500&family=Roboto:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+<style>
+/* ─── M3 System Tokens (overridden with our palette) ─── */
+:root {
+  /* Source color roles */
+  --md-sys-color-primary: #FF6230;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: rgba(255,98,48,0.10);
+  --md-sys-color-secondary: #4D5FFF;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: rgba(77,95,255,0.08);
+  --md-sys-color-tertiary: #00E87A;
+  --md-sys-color-on-tertiary: #003820;
+  --md-sys-color-tertiary-container: rgba(0,232,122,0.10);
+  --md-sys-color-error: #BA1A1A;
+  /* Surfaces */
+  --md-sys-color-background: #FAFAFA;
+  --md-sys-color-on-background: #0F0F0F;
+  --md-sys-color-surface: #FFFFFF;
+  --md-sys-color-surface-variant: #F5F5F5;
+  --md-sys-color-on-surface: #0F0F0F;
+  --md-sys-color-on-surface-variant: #666666;
+  --md-sys-color-outline: #E0E0E0;
+  --md-sys-color-outline-variant: #EBEBEB;
+  /* Elevation surfaces (tinted with primary at low opacity) */
+  --md-sys-elevation-1: rgba(255,98,48,0.03);
+  --md-sys-elevation-2: rgba(255,98,48,0.05);
+  /* Elevation shadows (M3 spec) */
+  --md-sys-shadow-1: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px 1px rgba(0,0,0,0.15);
+  --md-sys-shadow-2: 0 1px 2px rgba(0,0,0,0.3), 0 2px 6px 2px rgba(0,0,0,0.15);
+  /* App-specific tokens */
+  --app-bg: #F6F6F6;
+  --app-surface: #FFFFFF;
+  --app-surface-2: #F0F0F0;
+  --app-coral: #FF6230;
+  --app-indigo: #4D5FFF;
+  --app-mint: #00E87A;
+  --app-text: #0F0F0F;
+  --app-dim: #7B7B7B;
+  --app-muted: #A3A3A3;
+  --app-shadow-card: 0 4px 16px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
+  --app-shadow-sheet: 0 -4px 24px rgba(0,0,0,0.12);
+  /* Sidebar */
+  --nav-w: 256px;
+}
+
+/* ─── Reset ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+/* ─── Base ─── */
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
+}
+
+/* ─── Layout ─── */
+#sidebar {
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  width: var(--nav-w);
+  background: var(--md-sys-color-surface);
+  box-shadow: var(--md-sys-shadow-1);
+  overflow-y: auto;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  margin-left: var(--nav-w);
+  padding: 0 0 96px;
+}
+
+.content-wrap {
+  max-width: 900px;
+  padding: 48px 56px;
+}
+
+/* ─── Sidebar ─── */
+.nav-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  flex-shrink: 0;
+}
+.nav-header .app-name {
+  font-family: 'Barlow Condensed';
+  font-weight: 700;
+  font-size: 17px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--md-sys-color-on-background);
+  line-height: 1.1;
+}
+.nav-header .ds-label {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+  letter-spacing: 0.3px;
+}
+.nav-header .ds-version {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary);
+  font-weight: 500;
+}
+
+.nav-section {
+  padding: 16px 0 4px;
+}
+.nav-section-label {
+  padding: 4px 16px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+  opacity: 0.7;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px 10px 24px;
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface-variant);
+  text-decoration: none;
+  border-radius: 0 100px 100px 0;
+  margin-right: 12px;
+  transition: background 0.1s, color 0.1s;
+  cursor: pointer;
+}
+.nav-item:hover {
+  background: rgba(0,0,0,0.04);
+  color: var(--md-sys-color-on-surface);
+}
+.nav-item.active {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-primary);
+  font-weight: 500;
+}
+.nav-item .material-symbols-rounded {
+  font-size: 18px;
+  opacity: 0.7;
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+}
+.nav-item.active .material-symbols-rounded {
+  opacity: 1;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+.nav-item.stub {
+  opacity: 0.4;
+  pointer-events: none;
+}
+.nav-item .stub-label {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.06);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-left: auto;
+  font-weight: 400;
+}
+
+/* ─── Page sections ─── */
+.ds-section {
+  padding: 56px 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.ds-section:last-child { border-bottom: none; }
+
+.section-eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-primary);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Barlow Condensed';
+  font-weight: 700;
+  font-size: 40px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--md-sys-color-on-background);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.section-desc {
+  font-size: 14px;
+  color: var(--md-sys-color-on-surface-variant);
+  max-width: 560px;
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
+.subsection { margin-bottom: 40px; }
+.subsection-title {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  margin-bottom: 20px;
+}
+
+/* ─── Token tables ─── */
+.token-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.token-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline);
+  opacity: 0.7;
+  background: var(--md-sys-color-surface-variant);
+}
+.token-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  vertical-align: middle;
+}
+.token-table tr:last-child td { border-bottom: none; }
+.t-name {
+  font-family: 'Space Mono';
+  font-size: 11px;
+  color: var(--md-sys-color-secondary);
+}
+.t-preview {
+  display: inline-block;
+  width: 20px; height: 20px;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-right: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+/* ─── Color swatches ─── */
+.swatch-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+.swatch {
+  flex: 0 0 140px;
+}
+.swatch-color {
+  height: 80px;
+  border-radius: 12px 12px 0 0;
+}
+.swatch-info {
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 10px 12px;
+}
+.swatch-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-background);
+  margin-bottom: 2px;
+}
+.swatch-hex {
+  font-family: 'Space Mono';
+  font-size: 10px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.swatch-role {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 4px;
+}
+
+/* ─── Type scale ─── */
+.type-scale-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 24px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+.type-scale-row:last-child { border-bottom: none; }
+.type-meta-name { font-size: 12px; font-weight: 500; color: var(--md-sys-color-on-background); }
+.type-meta-spec { font-size: 11px; color: var(--md-sys-color-on-surface-variant); margin-top: 3px; line-height: 1.4; }
+
+/* ─── Shape demos ─── */
+.shape-row { display: flex; gap: 24px; align-items: flex-end; }
+.shape-demo-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.shape-block {
+  background: var(--md-sys-color-secondary);
+  width: 80px; height: 48px;
+}
+.shape-pill-demo {
+  background: var(--md-sys-color-secondary);
+  width: 80px; height: 36px;
+}
+.shape-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-background);
+  text-align: center;
+}
+.shape-desc {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ─── Elevation demos ─── */
+.elev-row { display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; }
+.elev-wrap { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+.elev-card {
+  width: 120px; height: 72px;
+  border-radius: 12px;
+  background: var(--md-sys-color-surface);
+}
+.elev-label { font-size: 12px; font-weight: 500; text-align: center; }
+.elev-desc { font-size: 11px; color: var(--md-sys-color-on-surface-variant); text-align: center; line-height: 1.4; }
+
+/* ─── Component frames ─── */
+.component-surface {
+  background: var(--app-bg);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  margin-bottom: 16px;
+}
+.component-surface.white {
+  background: var(--md-sys-color-surface);
+}
+.state-label {
+  font-family: 'Space Mono';
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+/* ─── App components (mirroring actual app) ─── */
+.ex-card {
+  background: #fff;
+  border-radius: 8px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  box-shadow: var(--app-shadow-card);
+  margin-bottom: 8px;
+  max-width: 380px;
+}
+.ex-dot { width: 6px; height: 6px; border-radius: 3px; margin-right: 12px; flex-shrink: 0; }
+.ex-name { font-family: 'Barlow Condensed'; font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+.ex-sets { font-family: 'Space Mono'; font-size: 10px; color: var(--app-muted); margin-top: 2px; }
+.ex-check { width: 18px; height: 18px; border-radius: 9px; margin-left: auto; flex-shrink: 0; }
+
+.set-row { display: flex; align-items: center; height: 44px; gap: 6px; max-width: 320px; }
+.set-n { font-family: 'Space Mono'; font-size: 11px; font-weight: 700; color: var(--app-dim); width: 14px; text-align: center; flex-shrink: 0; }
+.set-box { height: 36px; background: var(--app-surface-2); border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.set-box span { font-family: 'Space Mono'; font-size: 14px; }
+.set-log-btn { width: 36px; height: 36px; border-radius: 18px; margin-left: auto; flex-shrink: 0; }
+
+.tab-bar-demo {
+  display: flex;
+  background: #fff;
+  border-top: 0.5px solid rgba(0,0,0,0.07);
+  border-radius: 0 0 16px 16px;
+}
+.tab-item-demo { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 0; }
+.tab-indicator { width: 20px; height: 2px; border-radius: 1px; }
+.tab-icon-demo { width: 16px; height: 16px; border-radius: 4px; margin: 4px 0; }
+.tab-lbl { font-family: 'Space Mono'; font-size: 8px; letter-spacing: 1.2px; }
+
+/* ─── Buttons ─── */
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; height: 56px; padding: 0 24px; background: var(--app-coral); border-radius: 8px; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 18px; text-transform: uppercase; letter-spacing: 1.5px; color: #fff; border: none; cursor: default; }
+.btn-secondary { display: inline-flex; align-items: center; justify-content: center; height: 44px; padding: 0 20px; background: var(--app-surface-2); border-radius: 8px; font-family: 'Space Mono'; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--app-muted); border: none; cursor: default; }
+.btn-ghost { display: inline-flex; align-items: center; justify-content: center; height: 36px; padding: 0 16px; background: rgba(77,95,255,0.08); border-radius: 6px; font-family: 'Space Mono'; font-size: 10px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--app-indigo); border: none; cursor: default; }
+
+/* ─── Status chips (M3 assist chip style) ─── */
+.chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.chip.done {
+  background: var(--md-sys-color-tertiary-container);
+  border-color: rgba(0,232,122,0.2);
+  color: #00A857;
+}
+.chip.in-progress {
+  background: var(--md-sys-color-secondary-container);
+  border-color: rgba(77,95,255,0.2);
+  color: var(--md-sys-color-secondary);
+}
+.chip .material-symbols-rounded { font-size: 14px; font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20; }
+
+/* ─── Coming soon placeholder ─── */
+.coming-soon {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  border: 1.5px dashed var(--md-sys-color-outline-variant);
+  border-radius: 12px;
+  font-size: 13px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+.coming-soon .material-symbols-rounded {
+  font-size: 20px;
+  opacity: 0.5;
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+}
+
+/* ─── Principle cards ─── */
+.principles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 16px; }
+.principle-card {
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px;
+  padding: 20px;
+}
+.principle-icon { font-size: 24px; margin-bottom: 12px; color: var(--md-sys-color-primary); font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24; }
+.principle-name { font-family: 'Barlow Condensed'; font-weight: 700; font-size: 15px; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+.principle-desc { font-size: 12px; color: var(--md-sys-color-on-surface-variant); line-height: 1.55; }
+
+/* ─── Flow cards ─── */
+.flow-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.flow-card {
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 12px;
+  padding: 14px;
+}
+.flow-num { font-family: 'Space Mono'; font-size: 9px; color: var(--app-coral); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
+.flow-name { font-family: 'Barlow Condensed'; font-weight: 700; font-size: 14px; text-transform: uppercase; margin-bottom: 4px; }
+.flow-desc { font-size: 11px; color: var(--md-sys-color-on-surface-variant); line-height: 1.4; }
+
+/* ─── Progress bars ─── */
+.prog-track { height: 3px; background: var(--app-surface-2); border-radius: 2px; max-width: 380px; }
+.prog-fill { height: 100%; background: var(--app-indigo); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══ -->
+<nav id="sidebar" aria-label="Design system navigation">
+  <div class="nav-header">
+    <div class="app-name">Liz<br>Performance App</div>
+    <div class="ds-label">Design System</div>
+    <span class="ds-version">v0.1 · June 2026</span>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Overview</div>
+    <a href="#intro" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">home</span>
+      Introduction
+    </a>
+    <a href="#principles" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">auto_awesome</span>
+      Principles
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Foundation</div>
+    <a href="#color" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">palette</span>
+      Color
+    </a>
+    <a href="#typography" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">text_fields</span>
+      Typography
+    </a>
+    <a href="#shape" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">rounded_corner</span>
+      Shape
+    </a>
+    <a href="#elevation" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">layers</span>
+      Elevation
+    </a>
+    <a href="#motion" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">animation</span>
+      Motion
+      <span class="stub-label">Soon</span>
+    </a>
+    <a href="#icons" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">interests</span>
+      Icons
+      <span class="stub-label">Soon</span>
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Components</div>
+    <a href="#buttons" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">smart_button</span>
+      Buttons
+    </a>
+    <a href="#cards" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">article</span>
+      Cards
+    </a>
+    <a href="#navigation" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">bottom_navigation</span>
+      Navigation
+    </a>
+    <a href="#progress" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">linear_scale</span>
+      Progress
+    </a>
+    <a href="#inputs" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">input</span>
+      Inputs
+      <span class="stub-label">Log tab</span>
+    </a>
+    <a href="#sheets" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">vertical_align_bottom</span>
+      Bottom sheets
+      <span class="stub-label">Soon</span>
+    </a>
+    <a href="#overlays" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">open_with</span>
+      Overlays
+      <span class="stub-label">Soon</span>
+    </a>
+    <a href="#timer" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">timer</span>
+      Rest timer
+      <span class="stub-label">Soon</span>
+    </a>
+    <a href="#badges" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">new_releases</span>
+      Badges &amp; chips
+      <span class="stub-label">Soon</span>
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Patterns</div>
+    <a href="#session-flow" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">route</span>
+      Session flow
+    </a>
+    <a href="#log-flow" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">edit_note</span>
+      Logging flow
+      <span class="stub-label">Log tab</span>
+    </a>
+    <a href="#empty-states" class="nav-item stub">
+      <span class="material-symbols-rounded" aria-hidden="true">inbox</span>
+      Empty states
+      <span class="stub-label">Soon</span>
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-section-label">Tokens</div>
+    <a href="#tokens-color" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">token</span>
+      Color tokens
+    </a>
+    <a href="#tokens-type" class="nav-item">
+      <span class="material-symbols-rounded" aria-hidden="true">token</span>
+      Type &amp; shape tokens
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<main>
+<div class="content-wrap">
+
+<!-- INTRO -->
+<section class="ds-section" id="intro">
+  <div class="section-eyebrow">Liz Performance App</div>
+  <h1 class="section-title">Design System</h1>
+  <p class="section-desc">
+    A minimal, opinionated design system for a performance tracking PWA. Five-AM-proof — every action takes one thumb, every screen loads instantly, every input is reachable without scrolling. This is a living document, updated as each tab is designed and built.
+  </p>
+  <div class="chip-row">
+    <span class="chip done"><span class="material-symbols-rounded">check_circle</span>Foundation complete</span>
+    <span class="chip in-progress"><span class="material-symbols-rounded">pending</span>Workout tab designed</span>
+    <span class="chip">Program tab</span>
+    <span class="chip">Log tab</span>
+    <span class="chip">Build</span>
+  </div>
+</section>
+
+<!-- PRINCIPLES -->
+<section class="ds-section" id="principles">
+  <div class="section-eyebrow">Overview</div>
+  <h2 class="section-title">Principles</h2>
+  <p class="section-desc">Every design decision runs through these four lenses. If a UI element fails one, revisit it.</p>
+  <div class="principles-grid">
+    <div class="principle-card">
+      <div class="principle-icon material-symbols-rounded" aria-hidden="true">bolt</div>
+      <div class="principle-name">Five-AM-Proof</div>
+      <div class="principle-desc">Works at 5 AM with one hand. No friction. Tap in, log it, go lift.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-icon material-symbols-rounded" aria-hidden="true">fitness_center</div>
+      <div class="principle-name">Performance Aesthetic</div>
+      <div class="principle-desc">Bold type, high contrast, functional color. Strong, not decorative. Data reads first.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-icon material-symbols-rounded" aria-hidden="true">grid_view</div>
+      <div class="principle-name">System Thinking</div>
+      <div class="principle-desc">Consistent patterns, reusable components. Nothing one-off. Everything tokens.</div>
+    </div>
+    <div class="principle-card">
+      <div class="principle-icon material-symbols-rounded" aria-hidden="true">favorite</div>
+      <div class="principle-name">Athlete Context</div>
+      <div class="principle-desc">Postpartum athlete, breastfeeding. Every decision respects the full picture.</div>
+    </div>
+  </div>
+</section>
+
+<!-- COLOR -->
+<section class="ds-section" id="color">
+  <div class="section-eyebrow">Foundation</div>
+  <h2 class="section-title">Color</h2>
+  <p class="section-desc">Three accent colors plus a neutral surface system. Light mode only for v1. Each accent has one job — using them for the wrong purpose is an error.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">Accent palette</div>
+    <div class="swatch-row">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#FF6230;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Coral</div>
+          <div class="swatch-hex">#FF6230</div>
+          <div class="swatch-role">CTA · Primary action · Active tab</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#4D5FFF;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Indigo</div>
+          <div class="swatch-hex">#4D5FFF</div>
+          <div class="swatch-role">Accent · Active input · Progress</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#00E87A;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Mint</div>
+          <div class="swatch-hex">#00E87A</div>
+          <div class="swatch-role">Success · Done state · PR badge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Surfaces</div>
+    <div class="swatch-row">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F6F6F6;border:1px solid #E8E8E8;border-radius:12px 12px 0 0;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Background</div>
+          <div class="swatch-hex">#F6F6F6</div>
+          <div class="swatch-role">Screen background</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#FFFFFF;border:1px solid #E8E8E8;border-radius:12px 12px 0 0;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface</div>
+          <div class="swatch-hex">#FFFFFF</div>
+          <div class="swatch-role">Cards · Header · Tab bar</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F0F0F0;border:1px solid #E8E8E8;border-radius:12px 12px 0 0;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Surface 2</div>
+          <div class="swatch-hex">#F0F0F0</div>
+          <div class="swatch-role">Inputs · Secondary actions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Text</div>
+    <div class="swatch-row">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#0F0F0F;border-radius:12px 12px 0 0;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Primary</div>
+          <div class="swatch-hex">#0F0F0F</div>
+          <div class="swatch-role">Headings · Values</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#7B7B7B;border-radius:12px 12px 0 0;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Secondary</div>
+          <div class="swatch-hex">#7B7B7B</div>
+          <div class="swatch-role">Sub-labels · Helper text</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#A3A3A3;border-radius:12px 12px 0 0;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Muted</div>
+          <div class="swatch-hex">#A3A3A3</div>
+          <div class="swatch-role">Placeholder · Inactive</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TYPOGRAPHY -->
+<section class="ds-section" id="typography">
+  <div class="section-eyebrow">Foundation</div>
+  <h2 class="section-title">Typography</h2>
+  <p class="section-desc">Three typefaces, each with a specific role. Barlow Condensed for display and exercise names — reads fast in caps. Space Mono for numerical data and labels — monospaced columns align. Barlow for body text and notes.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">Typefaces</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-bottom:32px;">
+      <div style="border:1px solid var(--md-sys-color-outline-variant);border-radius:16px;padding:20px;">
+        <div style="font-family:'Barlow Condensed';font-weight:700;font-size:34px;text-transform:uppercase;line-height:1;margin-bottom:12px;">Barlow<br>Condensed</div>
+        <div style="font-size:12px;color:var(--md-sys-color-on-surface-variant);line-height:1.5;">Weight 700 · Display, exercise names, CTAs</div>
+      </div>
+      <div style="border:1px solid var(--md-sys-color-outline-variant);border-radius:16px;padding:20px;">
+        <div style="font-family:'Space Mono';font-size:22px;line-height:1.2;margin-bottom:12px;">Space<br>Mono</div>
+        <div style="font-size:12px;color:var(--md-sys-color-on-surface-variant);line-height:1.5;">Weight 400 · Data, labels, tabs, inputs</div>
+      </div>
+      <div style="border:1px solid var(--md-sys-color-outline-variant);border-radius:16px;padding:20px;">
+        <div style="font-family:'Barlow';font-size:22px;font-weight:400;line-height:1.3;margin-bottom:12px;">Barlow<br>Regular</div>
+        <div style="font-size:12px;color:var(--md-sys-color-on-surface-variant);line-height:1.5;">Weight 400, 500 · Body copy, notes</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Type scale</div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Display · Session</div><div class="type-meta-spec">Barlow Condensed 700<br>32px · uppercase</div></div>
+      <div><span style="font-family:'Barlow Condensed';font-weight:700;font-size:32px;text-transform:uppercase;letter-spacing:0.5px;line-height:1;">Lower Body A</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Header · Screen title</div><div class="type-meta-spec">Barlow Condensed 700<br>20px · uppercase</div></div>
+      <div><span style="font-family:'Barlow Condensed';font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:0.5px;">Monday · Lower A</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Exercise name</div><div class="type-meta-spec">Barlow Condensed 700<br>13px · uppercase · 0.3px spacing</div></div>
+      <div><span style="font-family:'Barlow Condensed';font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:0.3px;">Romanian Deadlift</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">CTA / Button</div><div class="type-meta-spec">Barlow Condensed 700<br>18px · uppercase · 1.5px spacing</div></div>
+      <div><span style="font-family:'Barlow Condensed';font-weight:700;font-size:18px;text-transform:uppercase;letter-spacing:1.5px;">Start Session</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Data value</div><div class="type-meta-spec">Space Mono 400<br>14–16px</div></div>
+      <div><span style="font-family:'Space Mono';font-size:16px;">135</span> <span style="font-family:'Space Mono';font-size:14px;color:#7B7B7B;">lbs</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Section label</div><div class="type-meta-spec">Space Mono 400<br>9px · uppercase · 1.8px spacing</div></div>
+      <div><span style="font-family:'Space Mono';font-size:9px;color:#7B7B7B;text-transform:uppercase;letter-spacing:1.8px;">Today's Session</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Tab label</div><div class="type-meta-spec">Space Mono 400<br>8px · uppercase · 1.2px spacing</div></div>
+      <div><span style="font-family:'Space Mono';font-size:8px;color:#FF6230;letter-spacing:1.2px;text-transform:uppercase;">WORKOUT</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Rest timer display</div><div class="type-meta-spec">Barlow Condensed 700<br>88px · −3px tracking</div></div>
+      <div><span style="font-family:'Barlow Condensed';font-weight:700;font-size:56px;letter-spacing:-2px;line-height:1;">1:30</span></div>
+    </div>
+    <div class="type-scale-row">
+      <div><div class="type-meta-name">Body / Notes</div><div class="type-meta-spec">Barlow 400<br>14px · line-height 1.55</div></div>
+      <div><span style="font-family:'Barlow';font-size:14px;color:#7B7B7B;line-height:1.55;">Recovery is training. Next session: Tuesday · Upper A</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- SHAPE -->
+<section class="ds-section" id="shape">
+  <div class="section-eyebrow">Foundation</div>
+  <h2 class="section-title">Shape</h2>
+  <p class="section-desc">Three radius values only. If it doesn't fit one of these, challenge the design — not the system.</p>
+  <div class="subsection">
+    <div class="shape-row">
+      <div class="shape-demo-wrap">
+        <div class="shape-block" style="border-radius:4px;"></div>
+        <div class="shape-label">4px</div>
+        <div class="shape-desc">Progress bars<br>Micro elements<br>Set dots</div>
+      </div>
+      <div class="shape-demo-wrap">
+        <div class="shape-block" style="border-radius:8px;"></div>
+        <div class="shape-label">8px</div>
+        <div class="shape-desc">Cards · Buttons<br>Inputs · Sheets<br>All main components</div>
+      </div>
+      <div class="shape-demo-wrap">
+        <div class="shape-pill-demo" style="border-radius:9999px;"></div>
+        <div class="shape-label">Pill</div>
+        <div class="shape-desc">Status badges<br>Check circles<br>Dots</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ELEVATION -->
+<section class="ds-section" id="elevation">
+  <div class="section-eyebrow">Foundation</div>
+  <h2 class="section-title">Elevation</h2>
+  <p class="section-desc">Cards lift off the #F6F6F6 background using a layered shadow system — large diffuse shadow plus a hairline border-as-shadow. No dark or colored shadows. Sheets cast their shadow upward.</p>
+
+  <div class="subsection">
+    <div class="elev-row">
+      <div class="elev-wrap">
+        <div class="elev-card" style="box-shadow:none;border:1px solid #E8E8E8;"></div>
+        <div class="elev-label">Flat</div>
+        <div class="elev-desc">Dividers<br>No lift</div>
+      </div>
+      <div class="elev-wrap">
+        <div class="elev-card" style="box-shadow:var(--app-shadow-card);"></div>
+        <div class="elev-label">Card</div>
+        <div class="elev-desc">Exercise cards<br>Data cards</div>
+      </div>
+      <div class="elev-wrap">
+        <div class="elev-card" style="box-shadow:var(--md-sys-shadow-1);"></div>
+        <div class="elev-label">M3 Elev. 1</div>
+        <div class="elev-desc">Headers<br>Tab bars</div>
+      </div>
+      <div class="elev-wrap">
+        <div class="elev-card" style="box-shadow:var(--app-shadow-sheet);border-radius:20px 20px 0 0;align-self:flex-end;height:56px;"></div>
+        <div class="elev-label">Sheet</div>
+        <div class="elev-desc">Bottom sheets<br>Appears from below</div>
+      </div>
+    </div>
+    <br>
+    <table class="token-table" style="margin-top:8px;">
+      <thead><tr><th>Level</th><th>Token</th><th>Shadow value</th></tr></thead>
+      <tbody>
+        <tr><td>Flat</td><td><span class="t-name">--</span></td><td style="font-family:'Space Mono';font-size:11px;">none</td></tr>
+        <tr><td>Card</td><td><span class="t-name">--app-shadow-card</span></td><td style="font-family:'Space Mono';font-size:11px;">0 4px 16px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04)</td></tr>
+        <tr><td>M3 Elevation 1</td><td><span class="t-name">--md-sys-shadow-1</span></td><td style="font-family:'Space Mono';font-size:11px;">0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15)</td></tr>
+        <tr><td>Sheet</td><td><span class="t-name">--app-shadow-sheet</span></td><td style="font-family:'Space Mono';font-size:11px;">0 -4px 24px rgba(0,0,0,.12)</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- BUTTONS -->
+<section class="ds-section" id="buttons">
+  <div class="section-eyebrow">Components</div>
+  <h2 class="section-title">Buttons</h2>
+  <p class="section-desc">Three types. Primary is the only color-filled button — one per screen maximum. Secondary and ghost for all supporting actions.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">Variants</div>
+    <div class="component-surface">
+      <div style="display:flex;flex-direction:column;gap:16px;max-width:380px;">
+        <div>
+          <button class="btn-primary" style="width:100%;">Start Session</button>
+          <div class="state-label" style="margin-top:6px;">Primary · Coral · 56px · Barlow Condensed 700 18px</div>
+        </div>
+        <div>
+          <button class="btn-secondary" style="width:100%;">End Session</button>
+          <div class="state-label" style="margin-top:6px;">Secondary · Surface 2 · 44px · Space Mono 11px</div>
+        </div>
+        <div>
+          <button class="btn-ghost">Rest Timer</button>
+          <div class="state-label" style="margin-top:6px;">Ghost · Indigo tint · 36px · Space Mono 10px</div>
+        </div>
+      </div>
+    </div>
+    <table class="token-table">
+      <thead><tr><th>Type</th><th>Height</th><th>Radius</th><th>Background</th><th>Text style</th></tr></thead>
+      <tbody>
+        <tr><td>Primary</td><td>56px</td><td>8px</td><td>#FF6230</td><td>Barlow Condensed 700 · 18px · uppercase · 1.5px</td></tr>
+        <tr><td>Secondary</td><td>44px</td><td>8px</td><td>#F0F0F0</td><td>Space Mono · 11px · uppercase · 1.4px · #A3A3A3</td></tr>
+        <tr><td>Ghost</td><td>36–44px</td><td>6–8px</td><td>rgba(77,95,255,.08)</td><td>Space Mono · 10–11px · uppercase · #4D5FFF</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CARDS -->
+<section class="ds-section" id="cards">
+  <div class="section-eyebrow">Components</div>
+  <h2 class="section-title">Cards</h2>
+  <p class="section-desc">The exercise card is the core UI unit of the workout tab. Three states map directly to the three accent colors.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">Exercise card states</div>
+    <div class="component-surface">
+      <div class="state-label">Pending</div>
+      <div class="ex-card">
+        <div class="ex-dot" style="background:#F0F0F0;"></div>
+        <div style="flex:1;min-width:0;"><div class="ex-name" style="color:#0F0F0F;">Romanian Deadlift</div><div class="ex-sets">3 × 8</div></div>
+        <div class="ex-check" style="background:#F0F0F0;"></div>
+      </div>
+      <div class="state-label" style="margin-top:16px;">Active (expanded)</div>
+      <div style="background:#fff;border-radius:8px;padding:12px 14px;box-shadow:var(--app-shadow-card);max-width:380px;margin-bottom:8px;">
+        <div style="display:flex;align-items:center;margin-bottom:10px;">
+          <div class="ex-dot" style="background:#FF6230;"></div>
+          <div><div class="ex-name" style="color:#0F0F0F;">Romanian Deadlift</div><div class="ex-sets">3 × 8 · working set</div></div>
+        </div>
+        <div style="border-top:0.5px solid rgba(0,0,0,0.06);padding-top:8px;">
+          <div class="set-row">
+            <span class="set-n">1</span>
+            <div class="set-box" style="width:70px;"><span style="color:#0F0F0F;">135</span></div>
+            <span style="font-size:14px;color:#7B7B7B;flex-shrink:0;">×</span>
+            <div class="set-box" style="width:50px;"><span style="color:#0F0F0F;">8</span></div>
+            <div class="set-log-btn" style="background:#00E87A;"></div>
+          </div>
+          <div class="set-row">
+            <span class="set-n">2</span>
+            <div class="set-box" style="width:70px;border:1.5px solid #4D5FFF;box-sizing:border-box;"><span style="font-size:11px;color:#7B7B7B;">lbs</span></div>
+            <span style="font-size:14px;color:#7B7B7B;flex-shrink:0;">×</span>
+            <div class="set-box" style="width:50px;"><span style="font-size:11px;color:#A3A3A3;">reps</span></div>
+            <div class="set-log-btn" style="background:#FF6230;"></div>
+          </div>
+        </div>
+      </div>
+      <div class="state-label" style="margin-top:16px;">Done</div>
+      <div class="ex-card">
+        <div class="ex-dot" style="background:#00E87A;"></div>
+        <div style="flex:1;min-width:0;"><div class="ex-name" style="color:#A3A3A3;">Barbell Back Squat</div><div class="ex-sets">4 × 5 · 135 lb avg</div></div>
+        <div class="ex-check" style="background:#00E87A;"></div>
+      </div>
+    </div>
+    <table class="token-table">
+      <thead><tr><th>State</th><th>Dot</th><th>Check</th><th>Name color</th></tr></thead>
+      <tbody>
+        <tr><td>Pending</td><td><span class="t-preview" style="background:#F0F0F0;"></span>#F0F0F0</td><td><span class="t-preview" style="background:#F0F0F0;"></span>#F0F0F0</td><td>#0F0F0F (Primary)</td></tr>
+        <tr><td>Active</td><td><span class="t-preview" style="background:#FF6230;"></span>#FF6230 Coral</td><td>—</td><td>#0F0F0F (Primary)</td></tr>
+        <tr><td>Done</td><td><span class="t-preview" style="background:#00E87A;"></span>#00E87A Mint</td><td><span class="t-preview" style="background:#00E87A;"></span>#00E87A</td><td>#A3A3A3 (Muted)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">Set row states</div>
+    <div class="component-surface white">
+      <div class="state-label">Logged</div>
+      <div class="set-row">
+        <span class="set-n">1</span>
+        <div class="set-box" style="width:70px;"><span style="color:#0F0F0F;">135</span></div>
+        <span style="font-size:14px;color:#7B7B7B;flex-shrink:0;">×</span>
+        <div class="set-box" style="width:50px;"><span style="color:#0F0F0F;">8</span></div>
+        <div class="set-log-btn" style="background:#00E87A;"></div>
+      </div>
+      <div class="state-label" style="margin-top:12px;">Active — awaiting input</div>
+      <div class="set-row">
+        <span class="set-n">2</span>
+        <div class="set-box" style="width:70px;border:1.5px solid #4D5FFF;box-sizing:border-box;"><span style="font-size:11px;color:#7B7B7B;">lbs</span></div>
+        <span style="font-size:14px;color:#7B7B7B;flex-shrink:0;">×</span>
+        <div class="set-box" style="width:50px;"><span style="font-size:11px;color:#A3A3A3;">reps</span></div>
+        <div class="set-log-btn" style="background:#FF6230;"></div>
+      </div>
+      <div class="state-label" style="margin-top:12px;">Empty</div>
+      <div class="set-row">
+        <span class="set-n">3</span>
+        <div class="set-box" style="width:70px;"><span style="font-size:11px;color:#A3A3A3;">lbs</span></div>
+        <span style="font-size:14px;color:#7B7B7B;flex-shrink:0;">×</span>
+        <div class="set-box" style="width:50px;"><span style="font-size:11px;color:#A3A3A3;">reps</span></div>
+        <div class="set-log-btn" style="background:#F0F0F0;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAVIGATION -->
+<section class="ds-section" id="navigation">
+  <div class="section-eyebrow">Components</div>
+  <h2 class="section-title">Navigation</h2>
+  <p class="section-desc">Persistent bottom tab bar. Three tabs. Active state: coral 2px top-line indicator + coral label. Inactive: muted icon + label at 28% opacity.</p>
+
+  <div class="subsection">
+    <div class="subsection-title">Tab bar</div>
+    <div class="component-surface" style="padding:0;overflow:hidden;max-width:380px;">
+      <div style="height:48px;background:#F6F6F6;"></div>
+      <div class="tab-bar-demo">
+        <div class="tab-item-demo">
+          <div class="tab-indicator" style="background:#FF6230;"></div>
+          <div class="tab-icon-demo" style="background:#FF6230;opacity:0.9;"></div>
+          <span class="tab-lbl" style="color:#FF6230;">WORKOUT</span>
+        </div>
+        <div class="tab-item-demo">
+          <div class="tab-icon-demo" style="background:#A3A3A3;opacity:0.28;"></div>
+          <span class="tab-lbl" style="color:#A3A3A3;">PROGRAM</span>
+        </div>
+        <div class="tab-item-demo">
+          <div class="tab-icon-demo" style="background:#A3A3A3;opacity:0.28;"></div>
+          <span class="tab-lbl" style="color:#A3A3A3;">LOG</span>
+        </div>
+      </div>
+    </div>
+    <table class="token-table" style="margin-top:16px;">
+      <thead><tr><th>Spec</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Height</td><td>72px</td></tr>
+        <tr><td>Background</td><td>#FFFFFF · Surface</td></tr>
+        <tr><td>Top border</td><td>0.5px rgba(0,0,0,0.07)</td></tr>
+        <tr><td>Active indicator</td><td>2px × 20px · #FF6230 · at top of tab item</td></tr>
+        <tr><td>Active label</td><td>#FF6230 · Space Mono 8px · 1.2px tracking · uppercase</td></tr>
+        <tr><td>Inactive label</td><td>#A3A3A3 · Space Mono 8px · 1.2px tracking · uppercase</td></tr>
+        <tr><td>Inactive icon opacity</td><td>28%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PROGRESS -->
+<section class="ds-section" id="progress">
+  <div class="section-eyebrow">Components</div>
+  <h2 class="section-title">Progress</h2>
+  <p class="section-desc">Two contexts. Program progress bar (rounded ends, lives in header). Session exercise progress bar (flush, full-bleed, no radius).</p>
+
+  <div class="subsection">
+    <div class="component-surface white">
+      <div class="state-label">Program progress · Week 8 of 17 (47%)</div>
+      <div class="prog-track" style="margin-bottom:24px;">
+        <div class="prog-fill" style="width:47%;"></div>
+      </div>
+      <div class="state-label">Session progress · 1 of 5 exercises (20%)</div>
+      <div class="prog-track" style="border-radius:0;max-width:100%;">
+        <div class="prog-fill" style="width:20%;border-radius:0;"></div>
+      </div>
+    </div>
+    <table class="token-table">
+      <thead><tr><th>Spec</th><th>Program bar</th><th>Session bar</th></tr></thead>
+      <tbody>
+        <tr><td>Height</td><td>3px</td><td>3px</td></tr>
+        <tr><td>Track</td><td>#F0F0F0 · 2px radius</td><td>#F0F0F0 · no radius</td></tr>
+        <tr><td>Fill</td><td>#4D5FFF Indigo · 2px radius</td><td>#4D5FFF Indigo · no radius</td></tr>
+        <tr><td>Placement</td><td>Below header card</td><td>Below session header, edge to edge</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- STUBS -->
+<section class="ds-section" id="inputs">
+  <div class="section-eyebrow">Components</div>
+  <h2 class="section-title">Inputs</h2>
+  <p class="section-desc">Numeric inputs for weight and reps. Designed for large tap targets at 5 AM. Always <code style="font-family:'Space Mono';font-size:12px;background:rgba(0,0,0,0.04);padding:1px 5px;border-radius:4px;">inputMode="decimal"</code>, never <code style="font-family:'Space Mono';font-size:12px;background:rgba(0,0,0,0.04);padding:1px 5px;border-radius:4px;">type="number"</code>.</p>
+  <div class="coming-soon">
+    <span class="material-symbols-rounded" aria-hidden="true">edit_note</span>
+    Documenting with Log tab design
+  </div>
+</section>
+
+<section class="ds-section" id="sheets">
+  <div class="section-eyebrow">Components</div>
+  <h2 class="section-title">Bottom sheets</h2>
+  <p class="section-desc">Used for pause overlay and rest timer. Slides up from bottom, dark scrim behind. Handle pill drag indicator at top.</p>
+  <div class="coming-soon">
+    <span class="material-symbols-rounded" aria-hidden="true">vertical_align_bottom</span>
+    Speccing from approved workout tab screens
+  </div>
+</section>
+
+<!-- SESSION FLOW -->
+<section class="ds-section" id="session-flow">
+  <div class="section-eyebrow">Patterns</div>
+  <h2 class="section-title">Session flow</h2>
+  <p class="section-desc">Six screen states in a complete workout session. Each state has one primary action and no decision fatigue.</p>
+  <div class="flow-grid">
+    <div class="flow-card">
+      <div class="flow-num">State 01</div>
+      <div class="flow-name">Pre-session</div>
+      <div class="flow-desc">Exercise list preview. Single CTA: Start Session.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">State 02</div>
+      <div class="flow-name">Active</div>
+      <div class="flow-desc">Expanded exercise. Set rows. Live timer. Progress bar.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">State 03</div>
+      <div class="flow-name">Paused</div>
+      <div class="flow-desc">Dimmed content. Bottom sheet: Resume or End.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">State 04</div>
+      <div class="flow-name">Rest timer</div>
+      <div class="flow-desc">Dark overlay. Countdown sheet. Skip Rest.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">State 05</div>
+      <div class="flow-name">Complete</div>
+      <div class="flow-desc">Mint check. Stats. PR badge. Log This Session CTA.</div>
+    </div>
+    <div class="flow-card">
+      <div class="flow-num">State 06</div>
+      <div class="flow-name">Rest day</div>
+      <div class="flow-desc">Empty state. Next session preview. View Program.</div>
+    </div>
+  </div>
+</section>
+
+<!-- TOKEN TABLES -->
+<section class="ds-section" id="tokens-color">
+  <div class="section-eyebrow">Tokens</div>
+  <h2 class="section-title">Color tokens</h2>
+  <p class="section-desc">Defined in <code style="font-family:'Space Mono';font-size:12px;background:rgba(0,0,0,0.04);padding:1px 5px;border-radius:4px;">design/tokens.css</code>. M3 system tokens are overridden with our palette in the same file.</p>
+  <table class="token-table">
+    <thead><tr><th></th><th>Token</th><th>Value</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><span class="t-preview" style="background:#F6F6F6;"></span></td><td><span class="t-name">--app-bg</span></td><td>#F6F6F6</td><td>Screen background</td></tr>
+      <tr><td><span class="t-preview" style="background:#FFFFFF;"></span></td><td><span class="t-name">--app-surface</span></td><td>#FFFFFF</td><td>Cards, header, tab bar</td></tr>
+      <tr><td><span class="t-preview" style="background:#F0F0F0;"></span></td><td><span class="t-name">--app-surface-2</span></td><td>#F0F0F0</td><td>Inputs, secondary actions</td></tr>
+      <tr><td><span class="t-preview" style="background:#FF6230;"></span></td><td><span class="t-name">--app-coral / --md-sys-color-primary</span></td><td>#FF6230</td><td>CTA, active tab, primary action</td></tr>
+      <tr><td><span class="t-preview" style="background:#4D5FFF;"></span></td><td><span class="t-name">--app-indigo / --md-sys-color-secondary</span></td><td>#4D5FFF</td><td>Active input, progress bar, ghost button</td></tr>
+      <tr><td><span class="t-preview" style="background:#00E87A;"></span></td><td><span class="t-name">--app-mint / --md-sys-color-tertiary</span></td><td>#00E87A</td><td>Success, done state, session complete</td></tr>
+      <tr><td><span class="t-preview" style="background:#0F0F0F;"></span></td><td><span class="t-name">--app-text</span></td><td>#0F0F0F</td><td>Headings, data values</td></tr>
+      <tr><td><span class="t-preview" style="background:#7B7B7B;"></span></td><td><span class="t-name">--app-dim</span></td><td>#7B7B7B</td><td>Sub-labels, set numbers</td></tr>
+      <tr><td><span class="t-preview" style="background:#A3A3A3;"></span></td><td><span class="t-name">--app-muted</span></td><td>#A3A3A3</td><td>Placeholder, inactive, muted</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="ds-section" id="tokens-type">
+  <div class="section-eyebrow">Tokens</div>
+  <h2 class="section-title">Type &amp; shape tokens</h2>
+  <table class="token-table">
+    <thead><tr><th>Token</th><th>Value</th></tr></thead>
+    <tbody>
+      <tr><td><span class="t-name">--font-display</span></td><td>'Barlow Condensed', sans-serif · weight 700</td></tr>
+      <tr><td><span class="t-name">--font-data</span></td><td>'Space Mono', monospace · weight 400</td></tr>
+      <tr><td><span class="t-name">--font-body</span></td><td>'Barlow', sans-serif · weight 400/500</td></tr>
+      <tr><td><span class="t-name">--md-ref-typeface-plain (M3)</span></td><td>'Barlow', 'Roboto', sans-serif</td></tr>
+      <tr><td><span class="t-name">--radius-sm</span></td><td>4px</td></tr>
+      <tr><td><span class="t-name">--radius-md</span></td><td>8px</td></tr>
+      <tr><td><span class="t-name">--radius-full</span></td><td>9999px</td></tr>
+      <tr><td><span class="t-name">--app-shadow-card</span></td><td>0 4px 16px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04)</td></tr>
+      <tr><td><span class="t-name">--app-shadow-sheet</span></td><td>0 -4px 24px rgba(0,0,0,.12)</td></tr>
+      <tr><td><span class="t-name">--md-sys-shadow-1 (M3)</span></td><td>0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+</main>
+
+<script>
+const links = document.querySelectorAll('.nav-item:not(.stub)');
+const sections = document.querySelectorAll('section[id]');
+
+function setActive() {
+  let cur = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 140) cur = s.id;
+  });
+  links.forEach(l => {
+    const href = l.getAttribute('href');
+    l.classList.toggle('active', href === '#' + cur);
+  });
+}
+
+window.addEventListener('scroll', setActive, { passive: true });
+setActive();
+
+links.forEach(l => {
+  l.addEventListener('click', e => {
+    e.preventDefault();
+    const id = l.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+</script>
+</body>
+</html>
