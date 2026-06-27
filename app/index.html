@@ -605,8 +605,11 @@ const S = {
 
 function loadState(){
   try{
-    const d=ls('lizdone2'), w=ls('lizweights2'), n=ls('liznotes2'),
-          p=ls('lizprs2'), wk=ls('lizweek2'),
+    const d=ls('lizdone2')||ls('lizdone'),
+          w=ls('lizweights2')||ls('lizweights'),
+          n=ls('liznotes2')||ls('liznotes'),
+          p=ls('lizprs2')||ls('lizprs'),
+          wk=ls('lizweek2')||ls('lizweek'),
           m=ls('lizmacros'), pr=ls('lizprogress');
     if(d) S.done=JSON.parse(d);
     if(w) S.weights=JSON.parse(w);
@@ -615,6 +618,12 @@ function loadState(){
     if(wk) S.weekIdx=parseInt(wk);
     if(m) S.macros=JSON.parse(m);
     if(pr) S.progress=JSON.parse(pr);
+    // migrate old keys to new
+    if(!ls('lizdone2')&&d) localStorage.setItem('lizdone2',d);
+    if(!ls('lizweights2')&&w) localStorage.setItem('lizweights2',w);
+    if(!ls('liznotes2')&&n) localStorage.setItem('liznotes2',n);
+    if(!ls('lizprs2')&&p) localStorage.setItem('lizprs2',p);
+    if(!ls('lizweek2')&&wk) localStorage.setItem('lizweek2',wk);
   }catch(e){console.warn(e)}
 }
 
