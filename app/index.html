@@ -1483,10 +1483,11 @@ function ioAction(){
       const wl=document.getElementById('workout-list');
       if(wl) wl.scrollTop=0;
       const bn=document.getElementById('import-banner');
-      const doneCount=Object.keys(S.done||{}).length;
+      const doneKeys=Object.keys(S.done||{});
       const exCount=Object.keys(S.weights||{}).length;
       const prCount=Object.keys(S.prs||{}).length;
-      document.getElementById('import-banner-text').textContent=`✓ Restored: ${doneCount} sessions done · ${exCount} exercise logs · ${prCount} PRs`;
+      const sampleKeys=doneKeys.slice(0,3).join(', ')||'none';
+      document.getElementById('import-banner-text').textContent=`✓ week:${S.weekIdx} done keys: [${sampleKeys}] ex:${exCount} pr:${prCount}`;
       bn.classList.add('show');
     }catch(e){
       setImportMsg('Couldn\'t read that — make sure you pasted the full backup text (starting with {).','var(--red)');
