@@ -786,6 +786,15 @@ function renderDayCards(){
   document.getElementById('day-cards').innerHTML=week.days.map((day,i)=>renderDayCard(day,i,start,todayIdx)).join('');
 }
 
+function dayHasLoggedWeights(day){
+  if(!day.workout||!WORKOUTS[day.workout]) return false;
+  return WORKOUTS[day.workout].some((_,ei)=>{
+    const sets=S.weights[`${day.id}-ex${ei}`];
+    if(!sets) return false;
+    return Object.values(sets).some(v=>typeof v==='object'?(v.w&&v.w.trim()):(v&&v.trim()));
+  });
+}
+
 function renderDayCard(day,dayIdx,weekStart,todayIdx){
   const isDone=!!S.done[day.id];
   const isOpen=!!S.openDays[day.id];
@@ -793,6 +802,7 @@ function renderDayCard(day,dayIdx,weekStart,todayIdx){
   const hasWo=day.type==='lift'&&day.workout&&WORKOUTS[day.workout];
   const isToday=dayIdx===todayIdx;
   const isCirque=!!day.isCirque;
+  const hasLog=!isDone&&hasWo&&dayHasLoggedWeights(day);
 
   // Date number
   const dateNum=weekStart?new Date(weekStart.getTime()+dayIdx*86400000).getDate():'';
@@ -821,6 +831,7 @@ function renderDayCard(day,dayIdx,weekStart,todayIdx){
   const sessionColor=isDone?'var(--tt)':(isToday?'var(--tp)':isRest?'var(--td)':'var(--ts)');
   const sessionWeight=isToday&&!isDone?'600':'500';
   const todayBadge=isToday&&!isDone?`<span style="display:inline-flex;background:var(--pink);color:var(--pink-on);font-size:9px;font-weight:600;padding:2px 7px;border-radius:var(--r-full);margin-left:6px;flex-shrink:0">Today</span>`:'';
+  const logBadge=hasLog?`<span style="display:inline-flex;background:rgba(77,95,255,.12);color:var(--ind-on);font-size:9px;font-weight:600;padding:2px 7px;border-radius:var(--r-full);margin-left:6px;flex-shrink:0;border:1px solid rgba(77,95,255,.2)">Logged</span>`:'';
 
   // Chevron — all days expandable
   const chvColor=isToday?'var(--pink)':'var(--td)';
@@ -860,7 +871,7 @@ function renderDayCard(day,dayIdx,weekStart,todayIdx){
       ${chk}${dateCol}
       <div style="flex:1;display:flex;align-items:center;min-width:0;overflow:hidden">
         <span style="font-size:14px;font-weight:${sessionWeight};color:${sessionColor};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escH(day.session)}</span>
-        ${todayBadge}
+        ${todayBadge}${logBadge}
       </div>
       ${chevron}
     </div>
