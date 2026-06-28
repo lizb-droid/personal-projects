@@ -1144,11 +1144,11 @@ function handleNote(ta){
 // REST TIMER
 // ─────────────────────────────────────────────
 
-let T={remaining:120,selected:120,running:false,interval:null};
+let T={remaining:120,selected:120,recommended:120,running:false,interval:null};
 
 function openTimer(exName,seconds){
   clearInterval(T.interval);
-  T={remaining:seconds,selected:seconds,running:false,interval:null};
+  T={remaining:seconds,selected:seconds,recommended:seconds,running:false,interval:null};
   document.getElementById('timer-ex-name').textContent=exName;
   document.getElementById('timer-sub').textContent='Recommended · '+fmtTime(seconds);
   document.getElementById('float-timer-time').textContent=fmtTime(seconds);
@@ -1165,7 +1165,7 @@ function openFloatTimer(){
 }
 
 function closeTimer(){
-  clearInterval(T.interval); T.running=false; T.remaining=T.selected;
+  clearInterval(T.interval); T.running=false; T.remaining=T.recommended; T.selected=T.recommended;
   renderTimer();
   document.getElementById('timer-modal').classList.remove('open');
 }
