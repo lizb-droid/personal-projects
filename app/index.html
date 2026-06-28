@@ -1270,6 +1270,27 @@ function renderMacros(){
     </div>`;
   }
 
+  let mealsHtml='';
+  if(m.meals&&m.meals.length){
+    mealsHtml='<div class="meal-list">'+m.meals.map((meal,i)=>{
+      const id='ml'+i;
+      const mkcal=meal.kcal||Math.round((meal.p||0)*4+(meal.c||0)*4+(meal.f||0)*9);
+      const items=meal.items&&meal.items.length?meal.items.map(item=>{
+        const ikcal=item.kcal||Math.round((item.p||0)*4+(item.c||0)*4+(item.f||0)*9);
+        return `<div class="meal-item"><span class="meal-item-name">${escH(item.name)}</span>
+         <span class="meal-item-macros">P ${item.p||0}·C ${item.c||0}·F ${item.f||0}·${ikcal}kcal</span></div>`;
+      }).join(''):'';
+      return `<div class="meal-block">
+        <div class="meal-header" onclick="toggleMeal('${id}')">
+          <div><div class="meal-name">${escH(meal.name)}</div>
+          <div class="meal-summary">P ${meal.p||0}·C ${meal.c||0}·F ${meal.f||0}·${mkcal}kcal</div></div>
+          ${items?`<svg id="${id}-icon" viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="var(--tt)" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>`:''}
+        </div>
+        ${items?`<div class="meal-body" id="${id}-body">${items}</div>`:''}
+      </div>`;
+    }).join('')+'</div>';
+  }
+
   el.innerHTML=`<div class="macro-hdr">
       <div class="macro-date">${m.date||todayStr()}${m.dayType?` · ${escH(m.dayType)}`:''}</div>
       <div class="macro-title-row"><div class="macro-title">Macros</div>
@@ -1280,7 +1301,7 @@ function renderMacros(){
       ${barRow('Carbs',c,tgt.c,'var(--coral)','#ff8a6e')}
       ${barRow('Fat',f,tgt.f,'var(--yel)','#d4d800')}
       ${barRow('Calories',kcal,tgt.kcal,'var(--red)','#f87171')}
-    </div>`;
+    </div>${mealsHtml}`;
 }
 
 function toggleMeal(id){
