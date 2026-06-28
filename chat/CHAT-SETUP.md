@@ -47,6 +47,26 @@ Context is provided via project knowledge files — see "Upload to Project" belo
 3. Flag any red line with one clear action.
 4. Confirm fueling timing was on schedule.
 5. Close: one thing that was good, one thing to watch tomorrow.
+6. **Always end with an app log snippet** labeled "— App Log —". Use this exact format:
+
+```json
+{
+  "date": "YYYY-MM-DD",
+  "day_type": "strength",
+  "meals": [
+    {
+      "name": "Meal name",
+      "items": [
+        {"name": "food item", "p": 0, "c": 0, "f": 0, "kcal": 0}
+      ],
+      "p": 0, "c": 0, "f": 0, "kcal": 0
+    }
+  ],
+  "totals": {"p": 0, "c": 0, "f": 0, "kcal": 0}
+}
+```
+
+`day_type`: one of `strength`, `run`, `race`, `rest`. Each meal has an `items` array with every food broken out individually. `totals` is the day total. Do not include targets or gaps.
 
 ---
 
