@@ -1165,6 +1165,8 @@ function openFloatTimer(){
 }
 
 function closeTimer(){
+  clearInterval(T.interval); T.running=false; T.remaining=T.selected;
+  renderTimer();
   document.getElementById('timer-modal').classList.remove('open');
 }
 
