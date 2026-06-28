@@ -623,7 +623,7 @@ const WEEKS = [
 const S = {
   tab:'workout', weekIdx:9,
   weights:{}, done:{}, notes:{}, prs:{}, openDays:{}, activeDayId:null,
-  macros:null, progress:null
+  macros:null, progress:null, checkins:null
 };
 
 function loadState(){
@@ -1634,7 +1634,7 @@ const GH_RAW=`https://raw.githubusercontent.com/${GH_REPO}/main/${GH_FILE}`;
 function buildBackup(){
   return JSON.stringify({
     done:S.done,weights:S.weights,notes:S.notes,prs:S.prs,
-    weekIdx:S.weekIdx,progress:S.progress,
+    weekIdx:S.weekIdx,progress:S.progress,checkins:S.checkins,
     exported:new Date().toISOString()
   });
 }
@@ -1694,6 +1694,7 @@ async function tryLoadFromGitHub(){
     if(data.prs) S.prs=data.prs;
     if(data.weekIdx!==undefined) S.weekIdx=data.weekIdx;
     if(data.progress) S.progress=data.progress;
+    if(data.checkins) S.checkins=data.checkins;
     saveWorkout();
     renderWeekTabs();
     renderDayCards();

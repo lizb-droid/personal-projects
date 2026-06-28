@@ -191,7 +191,8 @@ The backup contains:
 - `notes` — session notes per day
 - `prs` — personal records by exercise name
 - `weekIdx` — current week (0-indexed, so weekIdx 9 = week 10 of 17)
-- `progress` — weekly check-in entries keyed by date `YYYY-MM-DD`, each containing `{weight, cycleDay, sleep, energy, milkSupply, notes}`
+- `progress` — app progress data: `{prs: {exerciseName: lbs}, weightLog: [{date, weight}, ...]}`
+- `checkins` — weekly check-in entries keyed by date `YYYY-MM-DD`, each containing `{weight, cycleDay, sleep, energy, milkSupply, notes}`
 
 Use `weekIdx` to determine which week's data to summarize. The current week is `weekIdx`, the previous week is `weekIdx - 1`.
 

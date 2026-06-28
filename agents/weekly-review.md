@@ -189,38 +189,59 @@ If any red line is hit, escalate it clearly. Do not minimize.
 
 ## Writing Weekly Metrics Back to the App
 
-After delivering the report, save the weekly check-in entry to `backup.json` so it appears in the app.
+After delivering the report, write two things back to `backup.json`:
+- Weight → into `progress.weightLog` (this shows in the app's Progress tab)
+- Full check-in → into `checkins` keyed by date (used by agents for trend analysis)
 
 1. Fetch the current backup:
 ```bash
 curl -s "https://raw.githubusercontent.com/lizb-droid/body-optimization/main/app/data/backup.json" > /tmp/backup.json
 ```
 
-2. Read the file, parse the JSON, and add/update the entry under `progress` keyed by today's date:
-```json
-{
-  "progress": {
-    "2026-06-30": {
-      "weight": 150,
-      "cycleDay": 14,
-      "sleep": 7,
-      "energy": 8,
-      "milkSupply": "normal",
-      "notes": "any notes from Liz"
-    }
-  }
+2. Read and parse the JSON. Then update it with a Python script:
+```python
+import json, datetime
+
+with open('/tmp/backup.json') as f:
+    data = json.load(f)
+
+today = datetime.date.today().isoformat()  # e.g. "2026-06-30"
+weight = 150  # from Liz's check-in
+
+# Add weight to weightLog (app displays this)
+if 'progress' not in data or not isinstance(data['progress'], dict):
+    data['progress'] = {'prs': {}, 'weightLog': []}
+if 'weightLog' not in data['progress']:
+    data['progress']['weightLog'] = []
+data['progress']['weightLog'] = [e for e in data['progress']['weightLog'] if e.get('date') != today]
+data['progress']['weightLog'].insert(0, {'date': today, 'weight': weight})
+
+# Store full check-in in checkins (agents use this)
+if 'checkins' not in data:
+    data['checkins'] = {}
+data['checkins'][today] = {
+    'weight': weight,
+    'cycleDay': 14,   # fill from Liz's response, or omit if unknown
+    'sleep': 7,       # 1–10
+    'energy': 8,      # 1–10
+    'milkSupply': 'normal',
+    'notes': ''       # any notes from Liz
 }
+
+with open('/tmp/backup.json', 'w') as f:
+    json.dump(data, f)
 ```
 
-3. Write the updated JSON back and push:
+3. Copy the file into the repo and push:
 ```bash
+cp /tmp/backup.json /Users/elizabethbarbosa/Documents/Claude/body-optimization/app/data/backup.json
 cd /Users/elizabethbarbosa/Documents/Claude/body-optimization
 git add app/data/backup.json
 git commit -m "data: weekly check-in $(date +%Y-%m-%d)"
 git push
 ```
 
-The app will load the updated progress data automatically on next open.
+The app will load the updated weight and progress data automatically on next open.
 
 ---
 
