@@ -1667,14 +1667,12 @@ async function pushToGitHub(token){
 }
 
 async function tryLoadFromGitHub(){
-  const hasDone=Object.keys(S.done).length;
-  if(hasDone){showGHStatus('Local data found ('+hasDone+' days)');return;}
+  if(Object.keys(S.done).length) return;
   try{
-    showGHStatus('Fetching backup…');
     const r=await fetch(GH_RAW+'?t='+Date.now());
-    if(!r.ok){showGHStatus('Fetch failed: '+r.status);return;}
+    if(!r.ok) return;
     const data=await r.json();
-    if(!data.exported){showGHStatus('No exported flag in backup');return;}
+    if(!data.exported) return;
     if(data.done) S.done=data.done;
     if(data.weights) S.weights=data.weights;
     if(data.notes) S.notes=data.notes;
@@ -1685,18 +1683,7 @@ async function tryLoadFromGitHub(){
     saveWorkout();
     renderWeekTabs();
     renderDayCards();
-    showGHStatus('Loaded '+Object.keys(S.done).length+' days from backup ✓');
-  } catch(e){showGHStatus('Error: '+e.message);}
-}
-function showGHStatus(msg){
-  let el=document.getElementById('gh-status-bar');
-  if(!el){el=document.createElement('div');el.id='gh-status-bar';
-    Object.assign(el.style,{position:'fixed',bottom:'80px',left:'50%',transform:'translateX(-50%)',
-      background:'#333',color:'#fff',padding:'8px 16px',borderRadius:'8px',fontSize:'13px',
-      zIndex:'999',whiteSpace:'nowrap',maxWidth:'90vw',overflow:'hidden'});
-    document.body.appendChild(el);}
-  el.textContent=msg;el.style.display='block';
-  clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',5000);
+  } catch(e){}
 }
 
 // ─────────────────────────────────────────────
