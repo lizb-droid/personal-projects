@@ -389,6 +389,15 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 </div>
 
 <!-- ── GitHub sync modal ── -->
+<div id="macro-modal" onclick="if(event.target===this)closeMacroLog()" style="position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;padding-bottom:env(safe-area-inset-bottom);background:rgba(0,0,0,.5)">
+  <div style="background:var(--dk1);border-radius:20px 20px 0 0;padding:24px 20px;width:100%;box-sizing:border-box">
+    <div style="font-size:17px;font-weight:600;color:#fff;margin-bottom:6px">Log Macros</div>
+    <div style="font-size:13px;color:var(--tt);margin-bottom:16px">Paste the macro snippet from your Claude nutrition chat.</div>
+    <textarea id="macro-paste" placeholder='{"date":"2026-06-28","protein":150,"carbs":175,"fat":65,"calories":1885,"dayType":"Training"}' style="width:100%;box-sizing:border-box;height:100px;background:#111;border:1px solid var(--brd);border-radius:10px;color:#fff;font-size:13px;font-family:monospace;padding:10px;resize:none"></textarea>
+    <button onclick="confirmMacroLog()" style="margin-top:12px;width:100%;height:48px;background:var(--ind);border:none;border-radius:var(--r-full);font-size:16px;font-weight:600;color:#fff;cursor:pointer;font-family:inherit">Save</button>
+    <button onclick="closeMacroLog()" style="margin-top:8px;width:100%;height:44px;border:1px solid var(--brd);border-radius:var(--r-full);background:transparent;font-size:14px;font-weight:500;color:var(--ts);cursor:pointer;font-family:inherit">Cancel</button>
+  </div>
+</div>
 <div id="gh-modal" onclick="if(event.target===this)closeGHSetup()">
   <div style="position:absolute;inset:0;background:rgba(0,0,0,.5)"></div>
   <div style="position:relative;z-index:1;width:100%;background:var(--surf);border-radius:20px 20px 0 0;padding:20px">
@@ -1230,12 +1239,15 @@ function renderMacros(){
   if(!m){
     el.innerHTML=`<div class="macro-hdr"><div class="macro-date">${todayStr()}</div>
       <div class="macro-title-row"><div class="macro-title">Macros</div></div></div>
-      <div class="macro-empty"><p>Log your day with Claude and your macros will appear here automatically.<br><br>
-      Use the URL bridge:<br><code style="font-size:11px;color:#555">?log=1&p=142&c=180&f=52&kcal=2180&tab=macros</code></p></div>`;
+      <div class="macro-empty"><p>Log your macros in the Claude chat, then paste the snippet here.</p>
+      <button class="nav-btn" style="margin-top:16px;font-size:15px;padding:10px 24px" onclick="openMacroLog()">Log Macros</button></div>`;
     return;
   }
   const p=parseFloat(m.p)||0,c=parseFloat(m.c)||0,f=parseFloat(m.f)||0,kcal=parseFloat(m.kcal)||0;
-  const tgt={p:160,c:200,f:65,kcal:2400};
+  const dayType=(m.dayType||'').toLowerCase();
+  const tgt=dayType==='race'?{p:150,c:195,f:50,kcal:1830}
+    :dayType==='run'||dayType==='training'?{p:150,c:175,f:65,kcal:1885}
+    :{p:150,c:165,f:65,kcal:1845};
 
   function barRow(name,val,target,color,numColor){
     const pct=Math.min(100,Math.round((val/target)*100));
@@ -1279,7 +1291,7 @@ function renderMacros(){
   el.innerHTML=`<div class="macro-hdr">
       <div class="macro-date">${m.date||todayStr()}</div>
       <div class="macro-title-row"><div class="macro-title">Macros</div>
-      ${m.dayType?`<span class="day-type-tag">${escH(m.dayType)}</span>`:''}</div>
+      <button class="nav-btn" style="font-size:13px;padding:6px 14px" onclick="openMacroLog()">Update</button></div>
     </div>
     <div class="macro-bars">
       ${barRow('Protein',p,tgt.p,'var(--ind)','#a0aaff')}
@@ -1684,6 +1696,38 @@ async function tryLoadFromGitHub(){
     renderWeekTabs();
     renderDayCards();
   } catch(e){}
+}
+
+// ─────────────────────────────────────────────
+// MACRO LOG
+// ─────────────────────────────────────────────
+function openMacroLog(){
+  document.getElementById('macro-modal').style.display='flex';
+  document.getElementById('macro-paste').value='';
+  setTimeout(()=>document.getElementById('macro-paste').focus(),100);
+}
+function closeMacroLog(){
+  document.getElementById('macro-modal').style.display='none';
+}
+function confirmMacroLog(){
+  const raw=document.getElementById('macro-paste').value.trim();
+  try{
+    const d=JSON.parse(raw);
+    S.macros={
+      date: d.date||todayStr(),
+      dayType: d.dayType||'',
+      p: d.protein||d.p||0,
+      c: d.carbs||d.c||0,
+      f: d.fat||d.f||0,
+      kcal: d.calories||d.kcal||0,
+      meals: d.meals||[]
+    };
+    try{localStorage.setItem('lizmacros',JSON.stringify(S.macros));}catch(e){}
+    closeMacroLog();
+    renderMacros();
+  } catch(e){
+    alert('Could not read that — make sure you paste the full JSON snippet from Claude.');
+  }
 }
 
 // ─────────────────────────────────────────────
