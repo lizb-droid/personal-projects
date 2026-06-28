@@ -1249,56 +1249,35 @@ function renderMacros(){
     :dayType==='run'||dayType==='training'?{p:150,c:175,f:65,kcal:1885}
     :{p:150,c:165,f:65,kcal:1845};
 
-  function barRow(name,val,target,color,numColor){
+  function macroCard(name,val,target,color){
     const pct=Math.min(100,Math.round((val/target)*100));
-    const diff=val-target; const unit=name==='Calories'?'':' g';
-    const badge=diff>0
-      ?`<span class="macro-bar-badge over">+${Math.round(diff)}${unit} over</span>`
-      :`<span class="macro-bar-badge ok">${Math.round(Math.abs(diff))}${unit} left</span>`;
-    const display=name==='Calories'?Math.round(kcal).toLocaleString():Math.round(val);
-    const tgtDisplay=name==='Calories'?tgt.kcal.toLocaleString():target;
-    const unitLabel=name==='Calories'?'':' g';
-    return `<div class="macro-bar-row">
-      <div class="macro-bar-top">
-        <span class="macro-bar-name">${name}</span>
-        <div class="macro-bar-vals">
-          <span class="macro-bar-num" style="color:${numColor}">${display} / ${tgtDisplay}${unitLabel}</span>
-          ${badge}
-        </div>
+    const diff=Math.round(val-target);
+    const status=diff>=0?`<span style="color:#4ade80;font-size:11px">✓ done</span>`:`<span style="color:var(--tt);font-size:11px">${Math.abs(diff)}g left</span>`;
+    const unit=name==='Calories'?'kcal':'g';
+    return `<div style="background:var(--dk2);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <span style="font-size:13px;color:var(--tt)">${name}</span>
+        ${status}
       </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div>
+      <div style="font-size:26px;font-weight:600;color:${color}">${name==='Calories'?Math.round(val).toLocaleString():Math.round(val)}<span style="font-size:13px;font-weight:400;color:var(--tt);margin-left:2px">${unit}</span></div>
+      <div style="height:6px;background:#333;border-radius:999px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${color};border-radius:999px"></div>
+      </div>
+      <div style="font-size:11px;color:#444">Target ${name==='Calories'?target.toLocaleString():target}${unit}</div>
     </div>`;
   }
 
-  let mealsHtml='';
-  if(m.meals&&m.meals.length){
-    mealsHtml='<div class="meal-list">'+m.meals.map((meal,i)=>{
-      const id='ml'+i;
-      const items=meal.items?meal.items.map(item=>
-        `<div class="meal-item"><span class="meal-item-name">${escH(item.name)}</span>
-         <span class="meal-item-macros">P ${item.p||0}·C ${item.c||0}·F ${item.f||0}·${item.kcal||0}</span></div>`
-      ).join(''):'';
-      return `<div class="meal-block">
-        <div class="meal-header" onclick="toggleMeal('${id}')">
-          <div><div class="meal-name">${escH(meal.name)}</div>
-          <div class="meal-summary">P ${meal.p||0}·C ${meal.c||0}·F ${meal.f||0}·${meal.kcal||0} kcal</div></div>
-          <svg id="${id}-icon" viewBox="0 0 24 24" fill="none"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </div>
-        <div class="meal-body" id="${id}-body">${items}</div></div>`;
-    }).join('')+'</div>';
-  }
-
   el.innerHTML=`<div class="macro-hdr">
-      <div class="macro-date">${m.date||todayStr()}</div>
+      <div class="macro-date">${m.date||todayStr()}${m.dayType?` · ${escH(m.dayType)}`:''}</div>
       <div class="macro-title-row"><div class="macro-title">Macros</div>
       <button class="nav-btn" style="font-size:13px;padding:6px 14px" onclick="openMacroLog()">Update</button></div>
     </div>
-    <div class="macro-bars">
-      ${barRow('Protein',p,tgt.p,'var(--ind)','#a0aaff')}
-      ${barRow('Carbs',c,tgt.c,'var(--coral)','#ff8a6e')}
-      ${barRow('Fat',f,tgt.f,'var(--yel)','#d4d800')}
-      ${barRow('Calories',kcal,tgt.kcal,'var(--red)','#f87171')}
-    </div>${mealsHtml}`;
+    <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${macroCard('Protein',p,tgt.p,'#a0aaff')}
+      ${macroCard('Carbs',c,tgt.c,'#ff8a6e')}
+      ${macroCard('Fat',f,tgt.f,'#d4d800')}
+      ${macroCard('Calories',kcal,tgt.kcal,'#f87171')}
+    </div>`;
 }
 
 function toggleMeal(id){
