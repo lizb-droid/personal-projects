@@ -246,6 +246,8 @@ html,body{height:100%;overflow:hidden;font-family:'Roboto','Helvetica Neue',sans
 /* ── Day detail navigation ── */
 .nav-btn{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border-radius:var(--r-full);background:var(--pink);color:var(--pink-on);font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:inherit;white-space:nowrap;flex-shrink:0}
 .nav-btn:active{opacity:.85}
+.nav-btn-sec{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border-radius:var(--r-full);background:transparent;color:var(--tt);font-size:13px;font-weight:500;cursor:pointer;border:1px solid #444;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.nav-btn-sec:active{opacity:.7}
 .day-nav-hdr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px 12px}
 .day-nav-info{flex:1;text-align:center;min-width:0}
 .day-nav-day-lbl{font-size:11px;color:#555}
@@ -766,6 +768,7 @@ function switchTab(tab){
   document.getElementById('phase-bar').style.display=isW?'':'none';
   document.getElementById('week-tabs').style.display=isW?'':'none';
   document.getElementById('hdr-title').textContent={workout:'Workout',macros:'Macros',progress:'Progress'}[tab];
+  document.getElementById('gh-save-btn').style.display=tab==='macros'?'none':'';
   if(tab==='macros') renderMacros();
   if(tab==='progress') renderProgress();
 }
@@ -1237,9 +1240,7 @@ function selectPreset(p){ clearInterval(T.interval); T.running=false; T.selected
 function renderMacros(){
   const el=document.getElementById('macros-content'), m=S.macros;
   if(!m){
-    el.innerHTML=`<div class="macro-hdr"><div class="macro-date">${todayStr()}</div>
-      <div class="macro-title-row"><div class="macro-title">Macros</div></div></div>
-      <div class="macro-empty"><p>Log your macros in the Claude chat, then paste the snippet here.</p>
+    el.innerHTML=`<div class="macro-empty"><p>Log your macros in the Claude chat, then paste the snippet here.</p>
       <button class="nav-btn" style="margin-top:16px;font-size:15px;padding:10px 24px" onclick="openMacroLog()">Log Macros</button></div>`;
     return;
   }
@@ -1291,10 +1292,12 @@ function renderMacros(){
     }).join('')+'</div>';
   }
 
-  el.innerHTML=`<div class="macro-hdr">
-      <div class="macro-date">${m.date||todayStr()}${m.dayType?` · ${escH(m.dayType)}`:''}</div>
-      <div class="macro-title-row"><div class="macro-title">Macros</div>
-      <button class="nav-btn" style="font-size:13px;padding:6px 14px" onclick="openMacroLog()">Update</button></div>
+  el.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 20px;border-bottom:1px solid #222;background:var(--dk1)">
+      <span style="font-size:13px;color:var(--tt)">${m.date||todayStr()}${m.dayType?` · ${escH(m.dayType)}`:''}</span>
+      <div style="display:flex;gap:8px">
+        <button class="nav-btn" style="font-size:13px;padding:6px 14px" onclick="saveToGitHub()">Save</button>
+        <button class="nav-btn-sec" style="font-size:13px;padding:6px 14px" onclick="openMacroLog()">Update</button>
+      </div>
     </div>
     <div class="macro-bars">
       ${barRow('Protein',p,tgt.p,'var(--ind)','#a0aaff')}
